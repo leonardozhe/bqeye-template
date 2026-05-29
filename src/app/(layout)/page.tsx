@@ -469,11 +469,26 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <Box sx={{ bgcolor: '#F5F5F5', py: { xs: 5, md: 8 } }}>
         <Container maxWidth="xl">
-          <Box sx={{ textAlign: 'center', mb: 5 }}>
-            <Typography variant="h4" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 1 }}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 11, md: '46px' }, px: 1.75 }}>
+            <Typography
+              sx={{
+                fontWeight: 700,
+                color: '#282828',
+                fontSize: { xs: '24px', md: '28px', lg: '32px', xl: '36px', '2xl': '40px' },
+                lineHeight: { xs: '29px', md: '34px', lg: '38px', xl: '43px', '2xl': '48px' },
+              }}
+            >
               Shop by Frame Shape
             </Typography>
-            <Typography variant="body2" sx={{ color: '#808080' }}>
+            <Typography
+              sx={{
+                fontWeight: 400,
+                color: '#282828',
+                fontSize: { xs: '12px', md: '13px', lg: '14px', xl: '15px', '2xl': '16px' },
+                lineHeight: { xs: '14px', md: '15px', lg: '17px', xl: '18px', '2xl': '19px' },
+                mt: { xs: '6px', md: '6px', lg: '7px', xl: '7px', '2xl': '8px' },
+              }}
+            >
               Choose the perfect frames for your face or your style.
             </Typography>
           </Box>
@@ -601,11 +616,26 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <Box sx={{ bgcolor: '#F5F5F5', py: { xs: 5, md: 8 } }}>
         <Container maxWidth="xl">
-          <Box sx={{ textAlign: 'center', mb: 5 }}>
-            <Typography variant="h4" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 1 }}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 11, md: '46px' }, px: 1.75 }}>
+            <Typography
+              sx={{
+                fontWeight: 700,
+                color: '#282828',
+                fontSize: { xs: '24px', md: '28px', lg: '32px', xl: '36px', '2xl': '40px' },
+                lineHeight: { xs: '29px', md: '34px', lg: '38px', xl: '43px', '2xl': '48px' },
+              }}
+            >
               Shop by Lens Type
             </Typography>
-            <Typography variant="body2" sx={{ color: '#808080' }}>
+            <Typography
+              sx={{
+                fontWeight: 400,
+                color: '#282828',
+                fontSize: { xs: '12px', md: '13px', lg: '14px', xl: '15px', '2xl': '16px' },
+                lineHeight: { xs: '14px', md: '15px', lg: '17px', xl: '18px', '2xl': '19px' },
+                mt: { xs: '6px', md: '6px', lg: '7px', xl: '7px', '2xl': '8px' },
+              }}
+            >
               Find the right lenses for your vision needs.
             </Typography>
           </Box>
@@ -656,11 +686,28 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <Box sx={{ bgcolor: '#F0EBF8', py: { xs: 5, md: 8 } }}>
         <Container maxWidth="xl">
-          <Box sx={{ textAlign: 'center', mb: 5 }}>
-            <Typography variant="h4" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 1 }}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 11, md: '46px' }, px: 1.75 }}>
+            <Typography
+              sx={{
+                fontWeight: 700,
+                color: '#282828',
+                fontSize: { xs: '24px', md: '28px', lg: '32px', xl: '36px', '2xl': '40px' },
+                lineHeight: { xs: '29px', md: '34px', lg: '38px', xl: '43px', '2xl': '48px' },
+              }}
+            >
               Eyewear Insights & Tips
             </Typography>
-            <Typography variant="body2" sx={{ color: '#808080', maxWidth: 600, mx: 'auto' }}>
+            <Typography
+              sx={{
+                fontWeight: 400,
+                color: '#282828',
+                fontSize: { xs: '12px', md: '13px', lg: '14px', xl: '15px', '2xl': '16px' },
+                lineHeight: { xs: '14px', md: '15px', lg: '17px', xl: '18px', '2xl': '19px' },
+                mt: { xs: '6px', md: '6px', lg: '7px', xl: '7px', '2xl': '8px' },
+                maxWidth: { xs: '100%', md: '600px' },
+                mx: 'auto',
+              }}
+            >
               Gain valuable knowledge and practical tips to enhance your eyewear experience, ensuring comfort, style, and lasting performance.
             </Typography>
           </Box>
