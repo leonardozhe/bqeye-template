@@ -25,15 +25,15 @@ const SORT_OPTIONS = [
   { value: 'discount', label: 'Best Discount' },
 ];
 
-// ─── Category metadata matching Zeelool ───
+// ─── Category metadata matching BQEye ───
 const CATEGORY_META: Record<string, { title: string; desc: string }> = {
   all: {
     title: "Women's Glasses",
-    desc: "Fashionable prescription glasses designed for women exclusively, making it easy to order your frames online at ZEELOOL and have them delivered straight to your door.",
+    desc: "Fashionable prescription glasses designed for women exclusively, making it easy to order your frames online at BQEye and have them delivered straight to your door.",
   },
   'colored-contacts': {
     title: "Women's Glasses",
-    desc: "Fashionable prescription glasses designed for women exclusively, making it easy to order your frames online at ZEELOOL and have them delivered straight to your door.",
+    desc: "Fashionable prescription glasses designed for women exclusively, making it easy to order your frames online at BQEye and have them delivered straight to your door.",
   },
   cosplay: {
     title: "Men's Glasses",

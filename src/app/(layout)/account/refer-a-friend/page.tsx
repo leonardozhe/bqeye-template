@@ -16,7 +16,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 export default function ReferAFriendPage() {
-  const [referralLink] = useState('https://www.zeelool.com/?ref=YOUR_ID');
+  const [referralLink] = useState('https://www.bqeye.com/?ref=YOUR_ID');
   const [email, setEmail] = useState('');
   const [copied, setCopied] = useState(false);
   const [showRules, setShowRules] = useState(false);
@@ -38,7 +38,7 @@ export default function ReferAFriendPage() {
 
   const rules = [
     '1. Share your referral link with friends.',
-    '2. Your friend gets $20 in ZEELOOL Points + a $7 new user coupon when they sign up through your link.',
+    '2. Your friend gets $20 in BQEye Points + a $7 new user coupon when they sign up through your link.',
     '3. You earn $10 (100 Z Points) when your friend makes their first purchase.',
     '4. You can earn up to $100/day in Z Points.',
     '5. Points are credited after the friend\'s order return period ends.',
@@ -61,7 +61,7 @@ export default function ReferAFriendPage() {
           Sharing is Saving: Refer a Friend
         </Typography>
         <Typography variant="h6" sx={{ fontWeight: 600, color: '#463AE8', mb: 4, textAlign: 'center', fontSize: { xs: '1.1rem', md: '1.35rem' } }}>
-          & Earn $20 in ZEELOOL Points!
+          & Earn $20 in BQEye Points!
         </Typography>
 
         {/* ─── How it works ─── */}
@@ -265,7 +265,7 @@ export default function ReferAFriendPage() {
               { q: 'How do I earn Z Points?', a: 'Share your referral link. When your friend signs up and makes their first purchase, you earn 100 Z Points ($10 value).' },
               { q: 'What does my friend get?', a: 'Your friend receives 200 Z Points ($20) plus a $7 new user coupon when they sign up through your link.' },
               { q: 'How much can I earn?', a: 'You can earn up to $100/day (1,000 Z Points). There is no limit on the total number of friends you can refer.' },
-              { q: 'What are ZEELOOL Points worth?', a: '10 Z Points = $1. Points can deduct up to 80% of your order amount at checkout.' },
+              { q: 'What are BQEye Points worth?', a: '10 Z Points = $1. Points can deduct up to 80% of your order amount at checkout.' },
             ].map((faq, i) => (
               <FAQItem key={i} question={faq.q} answer={faq.a} />
             ))}

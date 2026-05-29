@@ -18,7 +18,7 @@ export interface BqeyeCartItem extends FrontendProduct {
 const COUPONS: Record<string, number> = {
   WELCOME10: 0.10,
   SAVE20: 0.20,
-  ZEELOOL15: 0.15,
+  BQEye15: 0.15,
 };
 
 const FREE_SHIPPING_THRESHOLD = 79;

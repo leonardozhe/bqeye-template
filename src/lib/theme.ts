@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
-export const zeeloolTheme = createTheme({
+export const bqeyeTheme = createTheme({
   typography: {
     fontFamily: "'Bricolage Grotesque', sans-serif",
     h1: { fontSize: '2.5rem', fontWeight: 700 },

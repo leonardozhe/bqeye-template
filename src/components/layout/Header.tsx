@@ -21,7 +21,7 @@ import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import { useCartStore } from '@/lib/cartStore';
 import { medusaProducts } from '@/api/medusa';
 
-// Zeelool nav tabs — exact names
+// BQEye nav tabs — exact names
 const mainTabs = [
   { label: 'Eyeglasses', href: '/products' },
   { label: 'Sunglasses', href: '/products' },
@@ -130,7 +130,7 @@ const megaMenuData: Record<string, { title: string; items: { label: string; href
       { label: 'Under $20', href: '/?section=under20' },
     ]},
     { title: 'Programs', items: [
-      { label: 'ZEELOOL Rewards', href: '/rewards' },
+      { label: 'BQEye Rewards', href: '/rewards' },
       { label: 'Refer a Friend', href: '/refer' },
       { label: 'Education Discount', href: '/education' },
     ]},
@@ -190,7 +190,7 @@ export default function Header() {
   const drawer = (
     <Box sx={{ width: 300 }} role="presentation">
       <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6" sx={{ fontWeight: 800, color: '#282828', letterSpacing: '2px' }}>ZEELOOL</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 800, color: '#282828', letterSpacing: '2px' }}>BQEye</Typography>
         <IconButton onClick={handleDrawerToggle}><CloseIcon /></IconButton>
       </Box>
       <Divider />
@@ -274,7 +274,7 @@ export default function Header() {
               </IconButton>
               <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ fontWeight: 900, color: '#282828', letterSpacing: '3px', cursor: 'pointer', fontSize: { xs: '1.25rem', md: '1.5rem' }, lineHeight: 1 }}>
-                  ZEELOOL
+                  BQEye
                 </Typography>
               </Link>
             </Box>

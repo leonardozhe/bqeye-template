@@ -90,7 +90,7 @@ NEXT_PUBLIC_GEO_SEO_ENABLED=true
 
 ## 🗺️ 前端标准
 
-详见 `standards/frontend.md`（来自 zeelool-template），包含：
+详见 `standards/frontend.md`（来自 bqeye-template），包含：
 - 项目结构规范
 - API 客户端规范
 - 前后端交互协议

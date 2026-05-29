@@ -40,7 +40,7 @@ export default function LensConfigWizard({ product, onComplete }: Props) {
   const [config, setConfig] = useState<LensConfiguration>(createDefaultConfig());
   const [_errors, setErrors] = useState<Record<string, string>>({});
 
-  // ─── Step 1: Lens Type (Zeelool 6 types) ───
+  // ─── Step 1: Lens Type (BQEye 6 types) ───
   const renderStep1 = () => (
     <Box>
       <Typography variant="body1" sx={{ fontWeight: 700, mb: 2 }}>选择镜片类型</Typography>

@@ -592,7 +592,7 @@ export default function ProductDetail({ product }: Props) {
             <Typography variant="body2" sx={{ color: '#808080' }}>Add to Wishlist</Typography>
           </Box>
 
-          {/* Services & Guarantees / Prescription Accordions — Zeelool style: no borders */}
+          {/* Services & Guarantees / Prescription Accordions — BQEye style: no borders */}
           <Box sx={{ mt: 3 }}>
             <Accordion defaultExpanded sx={{ border: 'none', boxShadow: 'none', mb: 0, '&:before': { display: 'none' }, bgcolor: 'transparent' }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
@@ -626,7 +626,7 @@ export default function ProductDetail({ product }: Props) {
           BOTTOM SECTION: Detail Tabs (full width)
          ═══════════════════════════════════════════════ */}
       <Box sx={{ mt: 6, mb: 4 }}>
-        {/* Tabs - centered, Zeelool style */}
+        {/* Tabs - centered, BQEye style */}
         <Box sx={{ borderBottom: '1px solid #e0e0e0' }}>
           <Tabs
             value={detailTab}

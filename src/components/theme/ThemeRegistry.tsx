@@ -3,7 +3,7 @@
 // Client-only theme provider — separated from server root layout
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { zeeloolTheme } from '@/lib/theme';
+import { bqeyeTheme } from '@/lib/theme';
 
 export default function ThemeRegistry({
   children,
@@ -11,7 +11,7 @@ export default function ThemeRegistry({
   children: React.ReactNode;
 }) {
   return (
-    <ThemeProvider theme={zeeloolTheme}>
+    <ThemeProvider theme={bqeyeTheme}>
       <CssBaseline />
       {children}
     </ThemeProvider>
