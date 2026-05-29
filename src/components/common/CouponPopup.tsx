@@ -120,14 +120,14 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
                 {/* Left coupon edge image */}
                 <Box
                   component="img"
-                  src="https://s3.zeelool.com/zeelool-next/coupon/coupon_left.png?im=Resize,width=32,type=downsize&q=75&adaptive=1"
+                  src="/icons/coupon/coupon_left.png"
                   alt=""
                   sx={{ position: 'absolute', top: 0, left: 0, width: 10, height: 80 }}
                 />
                 {/* Right coupon edge image (rotated) */}
                 <Box
                   component="img"
-                  src="https://s3.zeelool.com/zeelool-next/coupon/coupon_left.png?im=Resize,width=32,type=downsize&q=75&adaptive=1"
+                  src="/icons/coupon/coupon_left.png"
                   alt=""
                   sx={{ position: 'absolute', top: 0, right: 0, width: 10, height: 80, transform: 'rotate(180deg)' }}
                 />
@@ -310,7 +310,7 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
                       { name: 'Facebook', icon: <FacebookIcon sx={{ fontSize: 20, color: '#1877F2' }} /> },
                       { name: 'Amazon', icon: (
                         <Box component="img"
-                          src="https://s3.zeelool.com/zeelool-next/login/amazon_pc.png?im=Resize,width=48,type=downsize&q=75&adaptive=1"
+                          src="/icons/amazon_pc.png"
                           sx={{ width: 20, height: 20 }}
                         />
                       )},

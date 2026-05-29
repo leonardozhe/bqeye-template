@@ -72,17 +72,17 @@ const shopByStyle = [
   },
 ];
 
-// ─── Frame shape icons (zeelool.com 真实图片 + 名字 + href) ───
+// ─── Frame shape icons (本地图片, 后续迁移到 R2) ───
 const frameShapes = [
-  { name: 'Aviator', img: 'https://s3.zeelool.com/admin/shop/home/5fe513a15faae7eeb8d9278a5a7ebaa8.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/100' },
-  { name: 'Cat-Eye', img: 'https://s3.zeelool.com/admin/shop/home/4a4c7555638c02bd4a81e5feca586d1b.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/101' },
-  { name: 'Round', img: 'https://s3.zeelool.com/admin/shop/home/98649cc2ad7a37a3ccf1d2cb2bf92027.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/97' },
-  { name: 'Oval', img: 'https://s3.zeelool.com/admin/shop/home/5360d7f68a19a2b4fff7381ab6065357.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/94' },
-  { name: 'Browline', img: 'https://s3.zeelool.com/admin/shop/home/67f4dceb1e54ee798ca0912085e51c4c.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/99' },
-  { name: 'Geometric', img: 'https://s3.zeelool.com/admin/shop/home/5077c58bd030eb3dbdd1652b9e5854e0.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/131' },
-  { name: 'Rectangle', img: 'https://s3.zeelool.com/admin/shop/home/864b08bc55a9cebb55ee480ce94e6f72.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/95' },
-  { name: 'Butterfly', img: 'https://s3.zeelool.com/admin/shop/home/97b86470cf17dcb581a9dae5d9783df1.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/247' },
-  { name: 'Square', img: 'https://s3.zeelool.com/admin/shop/home/aaf22e730e3dec359f70bce9aec2b908.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/96' },
+  { name: 'Aviator', img: '/icons/frame-shapes/aviator.png', href: '/goods-list/100' },
+  { name: 'Cat-Eye', img: '/icons/frame-shapes/cat-eye.png', href: '/goods-list/101' },
+  { name: 'Round', img: '/icons/frame-shapes/round.png', href: '/goods-list/97' },
+  { name: 'Oval', img: '/icons/frame-shapes/oval.png', href: '/goods-list/94' },
+  { name: 'Browline', img: '/icons/frame-shapes/browline.png', href: '/goods-list/99' },
+  { name: 'Geometric', img: '/icons/frame-shapes/geometric.png', href: '/goods-list/131' },
+  { name: 'Rectangle', img: '/icons/frame-shapes/rectangle.png', href: '/goods-list/95' },
+  { name: 'Butterfly', img: '/icons/frame-shapes/butterfly.png', href: '/goods-list/247' },
+  { name: 'Square', img: '/icons/frame-shapes/square.png', href: '/goods-list/96' },
 ];
 
 // ─── Lens type icons (6 types, line art style) ───
