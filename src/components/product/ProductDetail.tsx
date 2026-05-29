@@ -264,26 +264,53 @@ export default function ProductDetail({ product }: Props) {
 
         {/* ─── RIGHT: Product Info ─── */}
         <Grid size={{ xs: 12, md: 6 }}>
-          {/* Product Title (h1) */}
-          <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5, fontSize: { xs: '1.5rem', md: '1.75rem' } }}>
+          {/* Product Title — zeelool: text-[max(1.6666666667vw,16px)] font-bb */}
+          <Typography
+            sx={{
+              fontWeight: 700,
+              fontSize: { xs: '16px', md: 'max(1.6666666667vw, 16px)', lg: '24px' },
+              lineHeight: 1.2,
+              color: '#282828',
+              mb: '6px',
+            }}
+          >
             {product.name}
           </Typography>
 
-          {/* SKU/ID */}
-          <Typography variant="caption" sx={{ color: '#808080', mb: 1, display: 'block' }}>
+          {/* SKU/ID — text-12 text-[#a9a9a9] */}
+          <Typography
+            sx={{
+              fontSize: '12px',
+              color: '#a9a9a9',
+              mb: 1,
+              display: 'block',
+            }}
+          >
             SKU: ZJGA{product.id}
           </Typography>
 
-          {/* Subtitle (h2) */}
-          <Typography variant="h6" sx={{ fontWeight: 400, color: '#808080', mb: 1.5, fontSize: '1rem' }}>
+          {/* Subtitle — pt-[6px] pb-10 text-[14px] capitalize text-[#a9a9a9] */}
+          <Typography
+            sx={{
+              fontWeight: 400,
+              color: '#a9a9a9',
+              fontSize: '14px',
+              lineHeight: 1.3,
+              mb: 2,
+              textTransform: 'capitalize',
+            }}
+          >
             {product.description.split('.')[0]}
           </Typography>
 
-          {/* Rating + Reviews */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          {/* Rating + Reviews — text-14 text-[#a9a9a9] */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
             <Rating value={product.rating} precision={0.5} readOnly size="small" sx={{ '& .MuiRating-iconFilled': { color: '#FFB800' } }} />
-            <Typography variant="body2" sx={{ color: '#282828' }}>
-              {product.rating} ({product.reviews} Reviews)
+            <Typography sx={{ color: '#a9a9a9', fontSize: '14px' }}>
+              {product.rating}{' '}
+              <Box component="span" sx={{ ml: 0.5, cursor: 'pointer', '&:hover': { textDecoration: 'underline', color: '#282828' } }}>
+                ({product.reviews} Reviews)
+              </Box>
             </Typography>
           </Box>
 
@@ -328,13 +355,13 @@ export default function ProductDetail({ product }: Props) {
             </Box>
           )}
 
-          {/* Price */}
-          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 2, mb: 3 }}>
-            <Typography variant="h4" sx={{ color: '#463AE8', fontWeight: 700 }}>
+          {/* Price — text-20 md:text-24 font-bb + strikethrough text-11 */}
+          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 2, mb: 4 }}>
+            <Typography sx={{ color: '#282828', fontWeight: 700, fontSize: { xs: '20px', md: '24px' } }}>
               ${product.price.toFixed(2)}
             </Typography>
             {product.originalPrice > product.price && (
-              <Typography variant="body1" sx={{ color: '#808080', textDecoration: 'line-through' }}>
+              <Typography sx={{ color: '#a9a9a9', textDecoration: 'line-through', fontSize: { xs: '11px', md: '14px' }, ml: 1 }}>
                 ${product.originalPrice.toFixed(2)}
               </Typography>
             )}
@@ -596,7 +623,7 @@ export default function ProductDetail({ product }: Props) {
           <Box sx={{ mt: 3 }}>
             <Accordion defaultExpanded sx={{ border: 'none', boxShadow: 'none', mb: 0, '&:before': { display: 'none' }, bgcolor: 'transparent' }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
-                <Typography variant="body1" sx={{ fontWeight: 700, color: '#282828', fontSize: '1rem' }}>Services & Guarantees</Typography>
+                <Typography sx={{ fontWeight: 700, color: '#282828', fontSize: '14px', lineHeight: 1.3 }}>Services & Guarantees</Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ px: 0, pt: 0 }}>
                 <Typography variant="body2" sx={{ color: '#808080', lineHeight: 2.2 }}>
@@ -610,7 +637,7 @@ export default function ProductDetail({ product }: Props) {
 
             <Accordion sx={{ border: 'none', boxShadow: 'none', mb: 0, '&:before': { display: 'none' }, bgcolor: 'transparent' }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 0 }}>
-                <Typography variant="body1" sx={{ fontWeight: 700, color: '#282828', fontSize: '1rem' }}>Prescription</Typography>
+                <Typography sx={{ fontWeight: 700, color: '#282828', fontSize: '14px', lineHeight: 1.3 }}>Prescription</Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ px: 0, pt: 0 }}>
                 <Typography variant="body2" sx={{ color: '#808080', lineHeight: 1.8 }}>
@@ -661,7 +688,7 @@ export default function ProductDetail({ product }: Props) {
           {detailTab === 0 && (
             <Grid container spacing={6}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, color: '#282828' }}>Product Details</Typography>
+                <Typography variant="body1" sx={{ fontWeight: 700, mb: 4, color: '#282828', fontSize: '16px' }}>Product Details</Typography>
                 <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
                   {[
                     { label: 'Shape', value: 'Rectangle' },
@@ -690,7 +717,7 @@ export default function ProductDetail({ product }: Props) {
 
           {detailTab === 1 && (
             <Box sx={{ maxWidth: 800 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, color: '#282828' }}>Product Description</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700, mb: 4, color: '#282828', fontSize: '16px' }}>Product Description</Typography>
               <Typography variant="body1" color="#555" sx={{ lineHeight: 2, fontSize: '1rem' }}>
                 {product.description}
               </Typography>
@@ -703,7 +730,7 @@ export default function ProductDetail({ product }: Props) {
 
           {detailTab === 2 && (
             <Box sx={{ maxWidth: 800 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, color: '#282828' }}>Lens Details</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700, mb: 4, color: '#282828', fontSize: '16px' }}>Lens Details</Typography>
               <Grid container spacing={3}>
                 {[
                   { title: 'Single Vision', desc: 'One prescription strength across the entire lens' },
@@ -723,7 +750,7 @@ export default function ProductDetail({ product }: Props) {
 
           {detailTab === 3 && (
             <Box sx={{ maxWidth: 800 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, color: '#282828' }}>Shipping & Returns</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 700, mb: 4, color: '#282828', fontSize: '16px' }}>Shipping & Returns</Typography>
               <Typography variant="body1" color="#555" sx={{ lineHeight: 2.2, fontSize: '1rem' }}>
                 📦 <strong>Free Standard Shipping</strong> on orders over $39.00<br />
                 🚚 Standard delivery: 7-14 business days<br />
@@ -739,7 +766,7 @@ export default function ProductDetail({ product }: Props) {
             <Box>
               {/* Review summary */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mb: 5 }}>
-                <Typography variant="h2" sx={{ fontWeight: 700, color: '#282828' }}>{product.rating}</Typography>
+                <Typography sx={{ fontWeight: 700, color: '#282828', fontSize: '24px' }}>{product.rating}</Typography>
                 <Box>
                   <Rating value={product.rating} precision={0.5} readOnly sx={{ '& .MuiRating-iconFilled': { color: '#FFB800' } }} />
                   <Typography variant="body1" sx={{ color: '#808080', mt: 0.5, fontSize: '1rem' }}>Based on {product.reviews} Reviews</Typography>

@@ -48,30 +48,30 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
       PaperProps={{
         sx: {
           borderRadius: '12px',
-          overflow: 'visible',
+          overflow: 'hidden',
           width: '100%',
           maxWidth: 420,
         }
       }}
     >
-      <DialogContent sx={{ p: 0, overflow: 'visible' }}>
+      <DialogContent sx={{ p: 0 }}>
         {/* ─── Top section: coupon grid ─── */}
         <Box
           sx={{
             bgcolor: '#e3e7fa',
             position: 'relative',
-            pt: '88px',   // space for close button
-            pb: 5,
-            px: 3,        // matches zeelool px-[24px]
+            pt: 5,
+            pb: 3,
+            px: 3,
           }}
         >
-          {/* Close button — matches zeelool: absolute top-10 right-18 */}
+          {/* Close button */}
           <Box
             onClick={onClose}
             sx={{
               position: 'absolute',
-              top: '40px',
-              right: '72px',
+              top: '10px',
+              right: '10px',
               zIndex: 20,
               cursor: 'pointer',
               bgcolor: 'transparent',
@@ -86,8 +86,8 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
           <Typography
             sx={{
               textAlign: 'center',
-              fontSize: '20px',
-              lineHeight: '20px',
+              fontSize: '16px',
+              lineHeight: 1.2,
               fontWeight: 700,
               color: '#333',
               mb: 2.5,
