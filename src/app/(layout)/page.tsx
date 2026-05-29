@@ -1,355 +1,728 @@
-// src/app/(layout)/page.tsx — HomePage matching zeelool.com layout
+// src/app/(layout)/page.tsx — HomePage 1:1 matching zeelool.com
 'use client';
 
-import { Typography, Button, Box, Avatar, Grid } from '@mui/material';
-import Container from '@mui/material/Container';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
-import ProductCard from '@/components/product/ProductCard';
-import CouponPopup from '@/components/common/CouponPopup';
-import { IconSection, frameShapeIcons, lensTypeIcons } from '@/components/icons/EyewearIcons';
-import { useNewArrivals, useBestSellers, useProducts } from '@/hooks/useProducts';
 import { useState, useEffect } from 'react';
+import {
+  Typography, Button, Box, Grid, Container,
+  IconButton, Divider, Chip } from '@mui/material';
+import Link from 'next/link';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import PercentIcon from '@mui/icons-material/Percent';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import StarIcon from '@mui/icons-material/Star';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import RxIcon from '@/components/icons/RxIcon';
+import GlassesMaintenanceIcon from '@/components/icons/GlassesMaintenanceIcon';
+import CouponPopup from '@/components/common/CouponPopup';
+import { useNewArrivals, useBestSellers, useProducts } from '@/hooks/useProducts';
+import type { FrontendProduct } from '@/api/medusa-mappers';
 
-// ─── Zeelool-style deal cards ───
-const bestDeals = [
-  { title: 'Buy 1, Get 50% Off', desc: 'On additional frames', bg: 'linear-gradient(135deg, #463AE8, #2d1fb5)', href: '/products?deal=buy1get50' },
-  { title: 'Free Shipping', desc: 'Orders over $39', bg: 'linear-gradient(135deg, #E91E63, #c2185b)', href: '/products?deal=free-shipping' },
-  { title: 'New Customer $20 Off', desc: 'Use code: WELCOME20', bg: 'linear-gradient(135deg, #FF5722, #e64a19)', href: '/products?deal=new-customer' },
-  { title: 'Refer a Friend', desc: 'Earn $10 each', bg: 'linear-gradient(135deg, #9C27B0, #7b1fa2)', href: '/refer' },
+// ─── Zeelool-style filter pills ───
+const filterPills = [
+  "Women's Glasses", "Men's Glasses", "Kids' Glasses",
+  'Sunglasses', 'Blue-Light Blocking Glasses', 'Shop All Glasses',
 ];
 
-// ─── Category showcase ───
-const categoryShowcase = [
-  { name: 'Eyeglasses', image: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=400&h=300&fit=crop', href: '/products?category=eyeglasses' },
-  { name: 'Sunglasses', image: 'https://images.unsplash.com/photo-1592981712106-c44375939d7b?w=400&h=300&fit=crop', href: '/products?category=sunglasses' },
-  { name: 'Colored Contacts', image: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=400&h=300&fit=crop', href: '/products?category=colored-contacts' },
-  { name: 'Accessories', image: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&h=300&fit=crop', href: '/products?category=accessories' },
+// ─── Zeelool style categories ───
+const styleCategories = [
+  {
+    title: 'Urban Chic',
+    desc: 'Modern frames designed for effortless city style.',
+    image: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=600&h=450&fit=crop',
+    href: '/products?style=urban-chic',
+  },
+  {
+    title: 'Diva',
+    desc: 'Bold, confidence-boosting frames designed to stand out.',
+    image: 'https://images.unsplash.com/photo-1592981712106-c44375939d7b?w=600&h=450&fit=crop',
+    href: '/products?style=diva',
+  },
+  {
+    title: 'Nostalgia',
+    desc: 'Retro-inspired eyewear with a timeless modern twist.',
+    image: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=600&h=450&fit=crop',
+    href: '/products?style=nostalgia',
+  },
+];
+
+// ─── Shop by Style cards ───
+const shopByStyle = [
+  {
+    title: 'Quiet Luxury',
+    desc: 'Refined frames that speak softly with elevated style.',
+    image: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=500&h=500&fit=crop',
+    href: '/products?style=quiet-luxury',
+  },
+  {
+    title: 'Business Casual',
+    desc: 'Polished everyday eyewear for work and beyond.',
+    image: 'https://images.unsplash.com/photo-1592981712106-c44375939d7b?w=500&h=500&fit=crop',
+    href: '/products?style=business-casual',
+  },
+  {
+    title: 'Classic',
+    desc: 'Timeless designs that never go out of style.',
+    image: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=500&h=500&fit=crop',
+    href: '/products?style=classic',
+  },
+];
+
+// ─── Frame shape icons (9 types, line art style) ───
+const frameShapes = [
+  { name: 'Aviator', path: 'M8 18 Q8 8 24 8 Q40 8 40 18 L40 28 Q40 34 24 34 Q8 34 8 28Z M16 14 L32 14' },
+  { name: 'Cat-Eye', path: 'M4 20 Q10 6 24 16 Q38 6 44 20 Q38 28 24 26 Q10 28 4 20Z' },
+  { name: 'Round', path: 'M8 24 A16 16 0 1 1 40 24 A16 16 0 1 1 8 24' },
+  { name: 'Oval', path: 'M6 24 A18 12 0 1 1 42 24 A18 12 0 1 1 6 24' },
+  { name: 'Browline', path: 'M6 18 Q6 12 24 12 Q42 12 42 18 L42 30 Q42 38 24 38 Q6 38 6 30Z M6 18 Q6 12 24 12 Q42 12 42 18' },
+  { name: 'Geometric', path: 'M24 4 L40 14 L40 34 L24 44 L8 34 L8 14Z' },
+  { name: 'Rectangle', path: 'M4 16 L44 16 L44 32 L4 32Z' },
+  { name: 'Butterfly', path: 'M6 12 Q6 4 24 14 Q42 4 42 12 Q42 22 24 28 Q6 22 6 12Z' },
+  { name: 'Square', path: 'M8 8 L40 8 L40 40 L8 40Z' },
+];
+
+// ─── Lens type icons (6 types, line art style) ───
+const lensTypes = [
+  { name: 'Single Vision', path: 'M8 24 A16 16 0 1 1 40 24 A16 16 0 1 1 8 24 M24 20 L24 28 M20 24 L28 24' },
+  { name: 'Progressive', path: 'M8 24 A16 16 0 1 1 40 24 A16 16 0 1 1 8 24 M14 18 Q24 24 34 18 M14 24 Q24 30 34 24 M14 30 Q24 36 34 30' },
+  { name: 'Reading', path: 'M8 24 A16 16 0 1 1 40 24 A16 16 0 1 1 8 24 M18 18 L30 18 M18 24 L28 24 M18 30 L26 30' },
+  { name: 'Sunglasses', path: 'M4 18 Q4 8 20 8 Q24 8 24 18 L24 28 Q24 36 20 36 Q4 36 4 28Z M28 18 Q28 8 44 8 Q40 8 40 18 L40 28 Q40 36 36 36 Q28 36 28 28Z M24 22 L28 22' },
+  { name: 'Blue Light', path: 'M8 24 A16 16 0 1 1 40 24 A16 16 0 1 1 8 24 M14 24 L20 24 M22 18 L22 30 M28 24 L34 24' },
+  { name: 'Photochromic', path: 'M24 16 A8 8 0 1 1 24 32 A8 8 0 1 1 24 16 M24 4 L24 8 M24 40 L24 44 M4 24 L8 24 M40 24 L44 24 M10 10 L13 13 M35 35 L38 38 M10 38 L13 35 M35 10 L38 13' },
 ];
 
 // ─── Eyewear Insights & Tips ───
 const eyewearInsights = [
   {
-    title: 'How to Choose the Right Frame Shape for Your Face',
-    desc: 'Round, square, or cat-eye? Find the perfect match.',
-    image: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=600&h=400&fit=crop',
-    href: '/guides/choose-frame',
-    tag: 'Guide',
+    icon: 'frame',
+    title: 'Learn about Frame',
+    desc: 'High Bridge vs. Low Bridge Glasses: How to Find the Most Comfortable Fit',
+    href: '/guides/bridge-fit',
   },
   {
-    title: 'Understanding Your Prescription: A Complete Guide',
-    desc: 'Decode SPH, CYL, AXIS and more.',
-    image: 'https://images.unsplash.com/photo-1592981712106-c44375939d7b?w=600&h=400&fit=crop',
+    icon: 'lens',
+    title: 'Learn about Lens',
+    desc: 'Photochromic Lenses vs. Transitions®: What\'s the Real Difference',
+    href: '/guides/photochromic',
+  },
+  {
+    icon: 'rx',
+    title: 'Learn about Prescription',
+    desc: 'What Does "ADD" Mean on Your Eyeglass Prescription',
     href: '/guides/prescription',
-    tag: 'Tutorial',
   },
   {
-    title: 'Blue Light Glasses: Do You Really Need Them?',
-    desc: 'The science behind blue light filtering.',
-    image: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=600&h=400&fit=crop',
-    href: '/guides/blue-light',
-    tag: 'Research',
+    icon: 'maintenance',
+    title: 'Learn about Maintenance',
+    desc: 'How to Prevent and Remove Glasses Marks on Your Nose',
+    href: '/guides/maintenance',
   },
 ];
 
-// ─── Shop by Look ───
-const shopByLook = [
-  { name: 'Natural', image: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=200&h=200&fit=crop' },
-  { name: 'Bold', image: 'https://images.unsplash.com/photo-1592981712106-c44375939d7b?w=200&h=200&fit=crop' },
-  { name: 'Cosplay', image: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=200&h=200&fit=crop' },
-  { name: 'Party', image: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=200&h=200&fit=crop&sat=50' },
-  { name: 'Daily', image: 'https://images.unsplash.com/photo-1592981712106-c44375939d7b?w=200&h=200&fit=crop&sat=-40' },
-];
+// ─── Product Card (Zeelool style) ───
+function ZeeloolProductCard({ product }: { product: FrontendProduct }) {
+  const price = product.variants?.[0]?.price || 0;
+  const originalPrice = price * 1.3;
+  const discount = Math.round((1 - price / originalPrice) * 100);
 
+  return (
+    <Box
+      component="a"
+      href={`/products/${product.handle}`}
+      sx={{
+        display: 'block',
+        textDecoration: 'none',
+        minWidth: 240,
+        flexShrink: 0,
+      }}
+    >
+      {/* Image area */}
+      <Box
+        sx={{
+          position: 'relative',
+          bgcolor: '#F2F2F2',
+          pt: '100%',
+          borderRadius: '8px',
+          overflow: 'hidden',
+          mb: 1.5,
+        }}
+      >
+        <Box
+          component="img"
+          src={product.thumbnail || product.images?.[0] || ''}
+          alt={product.title}
+          sx={{
+            position: 'absolute',
+            top: 0, left: 0,
+            width: '100%', height: '100%',
+            objectFit: 'contain',
+            p: 2,
+          }}
+        />
+        {/* Wishlist heart */}
+        <IconButton
+          size="small"
+          sx={{
+            position: 'absolute',
+            top: 8, right: 8,
+            bgcolor: 'rgba(255,255,255,0.8)',
+            '&:hover': { bgcolor: '#fff' },
+          }}
+          onClick={(e) => e.preventDefault()}
+        >
+          <FavoriteBorderIcon sx={{ fontSize: 18 }} />
+        </IconButton>
+        {/* NEW badge */}
+        {product.isNew && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 8, left: 8,
+              bgcolor: '#000',
+              color: '#fff',
+              px: 1, py: 0.3,
+              borderRadius: '4px',
+              fontSize: '0.65rem',
+              fontWeight: 700,
+            }}
+          >
+            NEW
+          </Box>
+        )}
+      </Box>
+
+      {/* Product info */}
+      <Typography variant="body2" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 0.5 }}>
+        {product.title}
+      </Typography>
+
+      {/* Price */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <Typography variant="body2" sx={{ fontWeight: 600, color: '#1A1A1A' }}>
+          ${price.toFixed(2)}
+        </Typography>
+        {discount > 0 && (
+          <Typography variant="caption" sx={{ color: '#999', textDecoration: 'line-through' }}>
+            ${originalPrice.toFixed(2)}
+          </Typography>
+        )}
+      </Box>
+
+      {/* Color swatches */}
+      <Box sx={{ display: 'flex', gap: 0.5 }}>
+        {['#463AE8', '#8B7355', '#D4A574', '#333'].map((color, i) => (
+          <Box
+            key={i}
+            sx={{
+              width: 14, height: 14,
+              borderRadius: '50%',
+              bgcolor: color,
+              border: i === 0 ? '2px solid #463AE8' : '1px solid #ddd',
+              boxSizing: 'border-box',
+            }}
+          />
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
+// ─── Section Header (with View More button) ───
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Typography variant="h5" sx={{ fontWeight: 700, color: '#1A1A1A' }}>
+        {title}
+      </Typography>
+      <Button
+        endIcon={<ChevronRightIcon />}
+        sx={{
+          color: '#1A1A1A',
+          border: '1px solid #1A1A1A',
+          borderRadius: '999px',
+          px: 2.5, py: 0.8,
+          textTransform: 'none',
+          fontWeight: 500,
+          fontSize: '0.875rem',
+          '&:hover': { bgcolor: '#1A1A1A', color: '#fff' },
+        }}
+      >
+        View More
+      </Button>
+    </Box>
+  );
+}
+
+// ─── MAIN PAGE ───
 export default function HomePage() {
   const { products: newArrivals, loading: newLoading } = useNewArrivals(8);
   const { products: bestSellers, loading: bestLoading } = useBestSellers(8);
-  const { products: bestDealsProducts } = useProducts({ limit: 8, order: '-created_at' });
 
-  // Coupon popup — show on first visit
+  // Coupon popup
   const [couponOpen, setCouponOpen] = useState(false);
-
   useEffect(() => {
-    const hasClaimed = localStorage.getItem('bqeye_coupon_claimed');
-    if (!hasClaimed) {
-      setCouponOpen(true);
-    }
+    const claimed = localStorage.getItem('bqeye_coupon_claimed');
+    if (!claimed) setCouponOpen(true);
   }, []);
 
-  const handleCouponClaim = (code: string) => {
-    localStorage.setItem('bqeye_coupon_claimed', code);
-    // TODO: integrate with cartStore.applyCoupon(code)
-  };
-
   return (
-    <Box>
+    <Box sx={{ bgcolor: '#fff' }}>
       {/* ─── Coupon Popup ─── */}
-      <CouponPopup
-        open={couponOpen}
-        onClose={() => setCouponOpen(false)}
-        onApply={handleCouponClaim}
-      />
+      <CouponPopup open={couponOpen} onClose={() => setCouponOpen(false)} onApply={() => {}} />
 
       {/* ═══════════════════════════════════════════
-          HERO BANNER
+          HERO BANNER — Zeelool summer style
          ═══════════════════════════════════════════ */}
       <Box
         sx={{
           position: 'relative',
-          minHeight: { xs: '300px', md: '500px' },
-          background: 'linear-gradient(135deg, #463AE8 0%, #2d1fb5 50%, #1a0f6e 100%)',
+          minHeight: { xs: '280px', md: '480px' },
+          background: 'linear-gradient(135deg, #B3E5FC 0%, #E1F5FE 30%, #FCE4EC 70%, #FFF3E0 100%)',
           display: 'flex',
           alignItems: 'center',
           overflow: 'hidden',
         }}
       >
-        <Box
-          sx={{
-            position: 'absolute',
-            right: '-10%',
-            top: '-20%',
-            width: '60%',
-            height: '140%',
-            borderRadius: '50%',
-            background: 'rgba(199, 255, 87, 0.1)',
-          }}
-        />
-        <Box
-          sx={{
-            position: 'absolute',
-            left: '5%',
-            bottom: '-30%',
-            width: '40%',
-            height: '80%',
-            borderRadius: '50%',
-            background: 'rgba(199, 255, 87, 0.05)',
-          }}
-        />
+        {/* Decorative elements */}
+        <Box sx={{ position: 'absolute', top: '-5%', right: '-5%', width: '30%', opacity: 0.15, fontSize: '120px', transform: 'rotate(-15deg)' }}>🌴</Box>
+        <Box sx={{ position: 'absolute', bottom: '-5%', left: '-2%', width: '20%', opacity: 0.15, fontSize: '80px', transform: 'rotate(10deg)' }}>🌿</Box>
 
         <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
           <Grid container alignItems="center" spacing={4}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Typography
-                variant="h2"
-                sx={{ color: '#ffffff', fontWeight: 700, mb: 2, fontSize: { xs: '2rem', md: '3.5rem' }, lineHeight: 1.2 }}
-              >
-                Transform Your
+              <Typography variant="h1" sx={{ fontWeight: 800, fontSize: { xs: '2.5rem', md: '3.5rem' }, color: '#1A1A1A', mb: 2, lineHeight: 1.1 }}>
+                Summer
                 <br />
-                <Box component="span" sx={{ color: '#C7FF57' }}>Eye Color</Box>
+                in Style
               </Typography>
-              <Typography variant="body1" sx={{ color: '#ffffffcc', mb: 3, fontSize: { xs: '1rem', md: '1.25rem' } }}>
-                Premium colored contact lenses for every look.
-                From natural to bold cosplay transformations.
+              <Typography variant="body1" sx={{ color: '#555', mb: 3, fontSize: '1.1rem' }}>
+                Light, effortless frames for every summer plan
               </Typography>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                <Button
-                  variant="contained" size="large" href="/products" endIcon={<ArrowForwardIcon />}
-                  sx={{ bgcolor: '#C7FF57', color: '#282828', '&:hover': { bgcolor: '#b8f04a' } }}
-                >
-                  Shop Now
-                </Button>
-                <Button
-                  variant="outlined" size="large" href="/products?new=true"
-                  sx={{ borderColor: '#ffffff44', color: '#ffffff', '&:hover': { borderColor: '#ffffff', bgcolor: '#ffffff11' } }}
-                >
-                  New Arrivals
-                </Button>
-              </Box>
+              <Button
+                variant="contained" size="large" href="/products"
+                sx={{
+                  bgcolor: '#1A1A1A', color: '#fff', borderRadius: '999px',
+                  px: 4, py: 1.2, textTransform: 'none', fontWeight: 700, fontSize: '1rem',
+                  '&:hover': { bgcolor: '#333' },
+                }}
+              >
+                Shop Now
+              </Button>
             </Grid>
-            <Grid size={{ xs: 6, md: 6 }}>
-              <Box
-                component="img"
-                src="https://images.unsplash.com/photo-1574169208507-84376144848b?w=600&h=600&fit=crop"
-                alt="Hero colored contacts"
-                sx={{ width: '100%', maxWidth: 400, mx: 'auto', display: 'block', borderRadius: '50%', border: '4px solid rgba(199, 255, 87, 0.3)' }}
-              />
+            <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+              <Box component="img" src="https://images.unsplash.com/photo-1574169208507-84376144848b?w=350&h=350&fit=crop" alt="Summer glasses" sx={{ maxWidth: { xs: '40%', md: 280 }, borderRadius: '12px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }} />
+              <Box component="img" src="https://images.unsplash.com/photo-1592981712106-c44375939d7b?w=350&h=350&fit=crop" alt="Summer glasses" sx={{ maxWidth: { xs: '40%', md: 280 }, borderRadius: '12px', boxShadow: '0 8px 32px rgba(0,0,0,0.1)', display: { xs: 'none', md: 'block' } }} />
             </Grid>
           </Grid>
         </Container>
       </Box>
 
       {/* ═══════════════════════════════════════════
-          BEST DEALS — zeelool style deal cards
+          FEATURES / TRUST BAR
          ═══════════════════════════════════════════ */}
-      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <LocalOfferIcon sx={{ color: '#463AE8' }} /> Best Deals
-        </Typography>
-        <Grid container spacing={2}>
-          {bestDeals.map((deal) => (
-            <Grid key={deal.title} size={{ xs: 6, md: 3 }}>
-              <Box
-                component="a"
-                href={deal.href}
-                sx={{
-                  display: 'block',
-                  p: 3,
-                  borderRadius: '12px',
-                  background: deal.bg,
-                  color: '#fff',
-                  textDecoration: 'none',
-                  minHeight: 120,
-                  transition: 'transform 0.2s',
-                  '&:hover': { transform: 'translateY(-4px)' },
-                }}
-              >
-                <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5 }}>{deal.title}</Typography>
-                <Typography variant="body2" sx={{ color: '#ffffffcc' }}>{deal.desc}</Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-      {/* ═══════════════════════════════════════════
-          CATEGORY SHOWCASE
-         ═══════════════════════════════════════════ */}
-      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3 }}>Shop by Category</Typography>
-        <Grid container spacing={2}>
-          {categoryShowcase.map((cat) => (
-            <Grid key={cat.name} size={{ xs: 6, sm: 3 }}>
-              <Box
-                component="a" href={cat.href}
-                sx={{ display: 'block', borderRadius: '12px', overflow: 'hidden', textDecoration: 'none', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-4px)' } }}
-              >
-                <Box component="img" src={cat.image} alt={cat.name} sx={{ width: '100%', paddingTop: '75%', objectFit: 'cover', display: 'block' }} />
-                <Typography variant="body2" sx={{ textAlign: 'center', mt: 1, fontWeight: 500, color: '#282828' }}>{cat.name}</Typography>
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-      {/* ═══════════════════════════════════════════
-          NEW ARRIVALS
-         ═══════════════════════════════════════════ */}
-      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <TrendingUpIcon sx={{ color: '#463AE8' }} /> New Arrivals
-          </Typography>
-          <Button endIcon={<ArrowForwardIcon />} href="/products?new=true" sx={{ color: '#463AE8' }}>View All</Button>
-        </Box>
-        {newLoading ? (
-          <Box sx={{ textAlign: 'center', py: 4 }}><Typography color="#808080">Loading...</Typography></Box>
-        ) : (
-          <Grid container spacing={2}>
-            {newArrivals.map((p) => (
-              <Grid key={p.id} size={{ xs: 6, sm: 4, md: 3 }}>
-                <ProductCard product={p} />
+      <Box sx={{ bgcolor: '#F8F9FA', py: 4 }}>
+        <Container maxWidth="xl">
+          <Grid container spacing={3}>
+            {[
+              { icon: <PercentIcon sx={{ fontSize: 32, color: '#4CAF50' }} />, title: 'Best Deals', sub: 'Limited Time & Stock' },
+              { icon: <LocalOfferIcon sx={{ fontSize: 32, color: '#4CAF50' }} />, title: 'All Coupons', sub: 'Total Value $50' },
+              { icon: <AssignmentReturnIcon sx={{ fontSize: 32, color: '#4CAF50' }} />, title: '30-Day', sub: 'Returns & Exchanges' },
+              { icon: <AccountBalanceWalletIcon sx={{ fontSize: 32, color: '#4CAF50' }} />, title: 'FSA/HSA', sub: 'Eligible' },
+            ].map((f) => (
+              <Grid key={f.title} size={{ xs: 6, md: 3 }}>
+                <Box sx={{ textAlign: 'center' }}>
+                  <Box sx={{ mb: 1, display: 'flex', justifyContent: 'center' }}>{f.icon}</Box>
+                  <Typography variant="body1" sx={{ fontWeight: 700, color: '#1A1A1A' }}>{f.title}</Typography>
+                  <Typography variant="body2" sx={{ color: '#808080', fontSize: '0.8rem' }}>{f.sub}</Typography>
+                </Box>
               </Grid>
             ))}
           </Grid>
+        </Container>
+      </Box>
+
+      {/* ═══════════════════════════════════════════
+          FRAME YOUR VIBE — Filter pills + style cards
+         ═══════════════════════════════════════════ */}
+      <Container maxWidth="xl" sx={{ py: { xs: 5, md: 8 } }}>
+        {/* Section heading */}
+        <Box sx={{ textAlign: 'center', mb: 3 }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 1 }}>
+            Frame Your Vibe
+          </Typography>
+          <Typography variant="body1" sx={{ color: '#555' }}>
+            Eyewear is the finishing touch of an outfit.
+          </Typography>
+        </Box>
+
+        {/* Filter pills */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 1.5, mb: 6 }}>
+          {filterPills.map((pill) => (
+            <Chip
+              key={pill}
+              label={pill}
+              component="a"
+              href="/products"
+              clickable
+              sx={{
+                borderRadius: '999px',
+                px: 2,
+                border: '1px solid #1A1A1A',
+                bgcolor: '#fff',
+                color: '#1A1A1A',
+                fontWeight: 500,
+                fontSize: '0.875rem',
+                '&:hover': { bgcolor: '#1A1A1A', color: '#fff' },
+              }}
+            />
+          ))}
+        </Box>
+
+        {/* Style Starts Here */}
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { md: 'center' }, gap: 3, mb: 4 }}>
+          <Typography variant="h3" sx={{ fontWeight: 800, color: '#1A1A1A', whiteSpace: 'nowrap' }}>
+            Style Starts Here
+          </Typography>
+          <Typography variant="body1" sx={{ color: '#555', maxWidth: 500 }}>
+            From everyday essentials to standout statement pieces, discover frames designed to match your vibe, elevate your style, and complete every look.
+          </Typography>
+        </Box>
+
+        {/* 3 Style category cards */}
+        <Grid container spacing={3}>
+          {styleCategories.map((cat) => (
+            <Grid key={cat.title} size={{ xs: 12, md: 4 }}>
+              <Box
+                component="a" href={cat.href}
+                sx={{ display: 'block', textDecoration: 'none' }}
+              >
+                <Box
+                  component="img" src={cat.image} alt={cat.title}
+                  sx={{
+                    width: '100%', pt: '75%', objectFit: 'cover',
+                    borderRadius: '8px', display: 'block',
+                  }}
+                />
+                <Typography variant="h6" sx={{ fontWeight: 700, color: '#1A1A1A', mt: 1.5, mb: 0.5 }}>
+                  {cat.title}
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#555' }}>
+                  {cat.desc}
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
+      {/* ═══════════════════════════════════════════
+          SHOP BY STYLE (3 category cards)
+         ═══════════════════════════════════════════ */}
+      <Container maxWidth="xl" sx={{ pb: { xs: 4, md: 6 } }}>
+        <Grid container spacing={3}>
+          {shopByStyle.map((s) => (
+            <Grid key={s.title} size={{ xs: 12, md: 4 }}>
+              <Box component="a" href={s.href} sx={{ display: 'block', textDecoration: 'none' }}>
+                <Box
+                  component="img" src={s.image} alt={s.title}
+                  sx={{ width: '100%', pt: '100%', objectFit: 'cover', borderRadius: '8px', display: 'block' }}
+                />
+                <Typography variant="h6" sx={{ fontWeight: 700, color: '#1A1A1A', mt: 1.5, mb: 0.5 }}>{s.title}</Typography>
+                <Typography variant="body2" sx={{ color: '#555' }}>{s.desc}</Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
+      {/* ═══════════════════════════════════════════
+          NEW ARRIVALS — horizontal scrollable
+         ═══════════════════════════════════════════ */}
+      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
+        <SectionHeader title="New Arrivals" />
+        {newLoading ? (
+          <Box sx={{ textAlign: 'center', py: 4 }}><Typography color="#808080">Loading...</Typography></Box>
+        ) : (
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 3,
+              overflowX: 'auto',
+              pb: 2,
+              '&::-webkit-scrollbar': { height: 4 },
+              '&::-webkit-scrollbar-thumb': { bgcolor: '#ddd', borderRadius: 2 },
+            }}
+          >
+            {newArrivals.map((p) => (
+              <ZeeloolProductCard key={p.id} product={p} />
+            ))}
+          </Box>
         )}
       </Container>
 
       {/* ═══════════════════════════════════════════
-          SHOP BY FRAME SHAPE — icons
+          SHOP BY FRAME SHAPE — 9 icon grid
          ═══════════════════════════════════════════ */}
-      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
-        <IconSection title="Shop by Frame Shape" items={frameShapeIcons} itemsPerRow={9} />
-      </Container>
-
-      {/* ═══════════════════════════════════════════
-          SHOP BY LENS TYPE — icons
-         ═══════════════════════════════════════════ */}
-      <Box sx={{ bgcolor: '#f5f6f7', py: { xs: 4, md: 6 } }}>
+      <Box sx={{ bgcolor: '#F5F5F5', py: { xs: 5, md: 8 } }}>
         <Container maxWidth="xl">
-          <IconSection title="Shop by Lens Type" items={lensTypeIcons} itemsPerRow={6} />
-        </Container>
-      </Box>
+          <Box sx={{ textAlign: 'center', mb: 5 }}>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 1 }}>
+              Shop by Frame Shape
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#808080' }}>
+              Choose the perfect frames for your face or your style.
+            </Typography>
+          </Box>
 
-      {/* ═══════════════════════════════════════════
-          PROMOTIONAL BANNER
-         ═══════════════════════════════════════════ */}
-      <Box sx={{ bgcolor: '#463AE8', py: { xs: 4, md: 6 }, px: 2 }}>
-        <Container maxWidth="xl">
-          <Grid container alignItems="center" spacing={4}>
-            <Grid size={{ xs: 12, md: 8 }}>
-              <Typography variant="h3" sx={{ color: '#C7FF57', fontWeight: 700, fontSize: { xs: '1.5rem', md: '2.5rem' }, mb: 1 }}>
-                Summer Sale — Up to 40% Off
-              </Typography>
-              <Typography variant="body1" sx={{ color: '#ffffffcc', mb: 2 }}>
-                Premium lenses at unbeatable prices. Free shipping on orders over $50.
-              </Typography>
-              <Button variant="contained" size="large" href="/products" sx={{ bgcolor: '#C7FF57', color: '#282828', '&:hover': { bgcolor: '#b8f04a' } }}>
-                Shop the Sale
-              </Button>
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }} sx={{ textAlign: 'center' }}>
-              <Typography variant="h1" sx={{ color: '#C7FF57', fontWeight: 700, fontSize: '6rem', lineHeight: 1 }}>40%</Typography>
-              <Typography variant="body1" sx={{ color: '#ffffff' }}>OFF SELECTED LENSES</Typography>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
-
-      {/* ═══════════════════════════════════════════
-          EYEWEAR INSIGHTS & TIPS
-         ═══════════════════════════════════════════ */}
-      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <LightbulbIcon sx={{ color: '#463AE8' }} /> Eyewear Insights & Tips
-        </Typography>
-        <Grid container spacing={3}>
-          {eyewearInsights.map((article) => (
-            <Grid key={article.title} size={{ xs: 12, md: 4 }}>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: 'repeat(3, 1fr)',
+                sm: 'repeat(5, 1fr)',
+                md: 'repeat(9, 1fr)',
+              },
+              gap: { xs: 2, md: 3 },
+            }}
+          >
+            {frameShapes.map((shape) => (
               <Box
-                component="a" href={article.href}
-                sx={{ display: 'block', borderRadius: '12px', overflow: 'hidden', textDecoration: 'none', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-4px)' }, bgcolor: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+                key={shape.name}
+                component="a"
+                href={`/products?shape=${shape.name.toLowerCase()}`}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textDecoration: 'none',
+                  gap: 1.5,
+                  transition: 'transform 0.2s',
+                  '&:hover': { transform: 'translateY(-4px)' },
+                }}
               >
-                <Box component="img" src={article.image} alt={article.title} sx={{ width: '100%', paddingTop: '60%', objectFit: 'cover', display: 'block' }} />
-                <Box sx={{ p: 2 }}>
-                  <Typography variant="caption" sx={{ color: '#463AE8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
-                    {article.tag}
-                  </Typography>
-                  <Typography variant="body1" sx={{ fontWeight: 700, color: '#282828', mt: 0.5, mb: 0.5 }}>{article.title}</Typography>
-                  <Typography variant="body2" color="#808080">{article.desc}</Typography>
-                </Box>
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <path
+                    d={shape.path}
+                    stroke="#1A1A1A"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                  />
+                </svg>
+                <Typography variant="caption" sx={{ fontWeight: 400, color: '#333', fontSize: '0.75rem' }}>
+                  {shape.name}
+                </Typography>
               </Box>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
+            ))}
+          </Box>
+        </Container>
+      </Box>
 
       {/* ═══════════════════════════════════════════
           BEST SELLERS
          ═══════════════════════════════════════════ */}
       <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h5" sx={{ fontWeight: 700 }}>Best Sellers</Typography>
-          <Button endIcon={<ArrowForwardIcon />} href="/products?best=true" sx={{ color: '#463AE8' }}>View All</Button>
-        </Box>
+        <SectionHeader title="Best Sellers" />
         {bestLoading ? (
           <Box sx={{ textAlign: 'center', py: 4 }}><Typography color="#808080">Loading...</Typography></Box>
         ) : (
-          <Grid container spacing={2}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 3,
+              overflowX: 'auto',
+              pb: 2,
+              '&::-webkit-scrollbar': { height: 4 },
+              '&::-webkit-scrollbar-thumb': { bgcolor: '#ddd', borderRadius: 2 },
+            }}
+          >
             {bestSellers.map((p) => (
-              <Grid key={p.id} size={{ xs: 6, sm: 4, md: 3 }}>
-                <ProductCard product={p} />
-              </Grid>
+              <ZeeloolProductCard key={p.id} product={p} />
             ))}
-          </Grid>
+          </Box>
         )}
       </Container>
 
       {/* ═══════════════════════════════════════════
-          SHOP BY LOOK
+          SUMMER BANNER
          ═══════════════════════════════════════════ */}
-      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
-        <Typography variant="h5" sx={{ fontWeight: 700, mb: 3, textAlign: 'center' }}>Shop by Look</Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: { xs: 2, md: 4 }, flexWrap: 'wrap' }}>
-          {shopByLook.map((look) => (
-            <Box key={look.name} component="a" href="/products" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textDecoration: 'none', gap: 1, transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.05)' } }}>
-              <Avatar src={look.image} alt={look.name} sx={{ width: { xs: 80, md: 100 }, height: { xs: 80, md: 100 }, border: '3px solid #f5f6f7' }} />
-              <Typography variant="body2" sx={{ fontWeight: 500, color: '#282828' }}>{look.name}</Typography>
-            </Box>
-          ))}
-        </Box>
-      </Container>
+      <Box
+        sx={{
+          position: 'relative',
+          height: { xs: '200px', md: '300px' },
+          background: 'linear-gradient(135deg, #87CEEB 0%, #5DADE2 50%, #2E86C1 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Beach scene simulation */}
+        <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to top, #F5DEB3, transparent)' }} />
+
+        <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
+          <Grid container alignItems="center">
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Typography variant="h2" sx={{ fontWeight: 800, color: '#fff', fontSize: { xs: '2rem', md: '3rem' }, mb: 1 }}>
+                Summer
+                <br />
+                Sale
+              </Typography>
+              <Typography variant="body1" sx={{ color: '#ffffffcc', mb: 3 }}>
+                Up to 80% off selected frames and lenses
+              </Typography>
+              <Button
+                variant="contained" size="large" href="/products?sale=true"
+                sx={{
+                  bgcolor: '#fff', color: '#1A1A1A', borderRadius: '999px',
+                  px: 4, py: 1.2, textTransform: 'none', fontWeight: 700,
+                  '&:hover': { bgcolor: '#f0f0f0' },
+                }}
+              >
+                Shop the Sale
+              </Button>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }} sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Box component="img" src="https://images.unsplash.com/photo-1574169208507-84376144848b?w=400&h=400&fit=crop" alt="Summer sale" sx={{ maxWidth: 300, borderRadius: '50%', border: '4px solid #fff', boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }} />
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* ═══════════════════════════════════════════
+          SHOP BY LENS TYPE — 6 icon grid
+         ═══════════════════════════════════════════ */}
+      <Box sx={{ bgcolor: '#F5F5F5', py: { xs: 5, md: 8 } }}>
+        <Container maxWidth="xl">
+          <Box sx={{ textAlign: 'center', mb: 5 }}>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 1 }}>
+              Shop by Lens Type
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#808080' }}>
+              Find the right lenses for your vision needs.
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: 'repeat(3, 1fr)', sm: 'repeat(6, 1fr)' },
+              gap: { xs: 2, md: 3 },
+            }}
+          >
+            {lensTypes.map((lens) => (
+              <Box
+                key={lens.name}
+                component="a"
+                href={`/products?lens=${lens.name.toLowerCase().replace(/\s+/g, '-')}`}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textDecoration: 'none',
+                  gap: 1.5,
+                  transition: 'transform 0.2s',
+                  '&:hover': { transform: 'translateY(-4px)' },
+                }}
+              >
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                  <path
+                    d={lens.path}
+                    stroke="#1A1A1A"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                  />
+                </svg>
+                <Typography variant="caption" sx={{ fontWeight: 400, color: '#333', fontSize: '0.75rem', textAlign: 'center' }}>
+                  {lens.name}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Container>
+      </Box>
+
+      {/* ═══════════════════════════════════════════
+          EYEWEAR INSIGHTS & TIPS — 4 info cards
+         ═══════════════════════════════════════════ */}
+      <Box sx={{ bgcolor: '#F0EBF8', py: { xs: 5, md: 8 } }}>
+        <Container maxWidth="xl">
+          <Box sx={{ textAlign: 'center', mb: 5 }}>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 1 }}>
+              Eyewear Insights & Tips
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#808080', maxWidth: 600, mx: 'auto' }}>
+              Gain valuable knowledge and practical tips to enhance your eyewear experience, ensuring comfort, style, and lasting performance.
+            </Typography>
+          </Box>
+
+          <Grid container spacing={3}>
+            {eyewearInsights.map((article) => (
+              <Grid key={article.title} size={{ xs: 12, sm: 6, md: 3 }}>
+                <Box
+                  sx={{
+                    bgcolor: '#fff',
+                    borderRadius: '12px',
+                    p: 3,
+                    textAlign: 'center',
+                    transition: 'transform 0.2s',
+                    '&:hover': { transform: 'translateY(-4px)' },
+                  }}
+                >
+                  {/* Icon */}
+                  <Box
+                    sx={{
+                      width: 64, height: 64,
+                      borderRadius: '50%',
+                      bgcolor: '#fff',
+                      border: '1px solid #e0e0e0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      mx: 'auto',
+                      mb: 2,
+                    }}
+                  >
+                    {article.icon === 'frame' && <RemoveRedEyeIcon sx={{ fontSize: 28, color: '#1A1A1A' }} />}
+                    {article.icon === 'lens' && <NewReleasesIcon sx={{ fontSize: 28, color: '#1A1A1A' }} />}
+                    {article.icon === 'rx' && <Typography sx={{ fontWeight: 800, fontSize: '1.5rem', color: '#1A1A1A' }}>Rx</Typography>}
+                    {article.icon === 'maintenance' && <AssignmentReturnIcon sx={{ fontSize: 28, color: '#1A1A1A' }} />}
+                  </Box>
+
+                  <Typography variant="body1" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 1 }}>
+                    {article.title}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#555', mb: 2, lineHeight: 1.6, minHeight: 40 }}>
+                    {article.desc}
+                  </Typography>
+                  <Button
+                    endIcon={<ChevronRightIcon />}
+                    href={article.href}
+                    sx={{
+                      color: '#1A1A1A',
+                      border: '1px solid #1A1A1A',
+                      borderRadius: '999px',
+                      px: 2, py: 0.6,
+                      textTransform: 'none',
+                      fontWeight: 500,
+                      fontSize: '0.8rem',
+                      '&:hover': { bgcolor: '#1A1A1A', color: '#fff' },
+                    }}
+                  >
+                    Learn More
+                  </Button>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
     </Box>
   );
 }
