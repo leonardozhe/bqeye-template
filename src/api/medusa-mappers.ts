@@ -42,11 +42,11 @@ export interface MedusaProductListResponse {
 }
 
 export interface FrontendProduct {
-  id: string;                // Medusa id (string, not number)
-  handle: string;            // URL slug
-  title: string;             // name
+  id: string;
+  handle: string;
+  title: string;
   description: string;
-  thumbnail: string;         // main image
+  thumbnail: string;
   images: string[];
   variants: Array<{
     id: string;
@@ -61,22 +61,38 @@ export interface FrontendProduct {
   createdAt: string;
   updatedAt: string;
   metadata?: Record<string, unknown>;
+
+  // ─── Compatibility aliases (for existing components) ───
+  name: string;
+  slug: string;
+  price: number;
+  originalPrice: number;
+  image: string;
+  rating: number;
+  reviews: number;
+  colors: { name: string; hex: string }[];
+  discount: number;
+  isNew?: boolean;
+  isBestSeller?: boolean;
 }
 
 // ─── 映射函数 ───
 
 export function mapMedusaProduct(m: MedusaProduct): FrontendProduct {
-  // 取第一个 variant 的价格作为展示价
-  const variants = (m.variants || []).map(v => ({
-    id: v.id,
-    title: v.title,
-    price: v.calculated_price?.calculated_amount || v.prices?.[0]?.amount || 0,
-    currencyCode: v.calculated_price?.currency_code || v.prices?.[0]?.currency_code || 'usd',
-    inventoryQuantity: v.inventory_quantity,
-  }));
+  const variants = (m.variants || []).map(v => {
+    const cp = v.calculated_price;
+    return {
+      id: v.id,
+      title: v.title,
+      price: cp?.calculated_amount || 0,
+      currencyCode: cp?.currency_code || 'usd',
+      inventoryQuantity: v.inventory_quantity,
+    };
+  });
 
-  // 从 tags 判断是否 new / best-seller
   const tagValues = (m.tags || []).map(t => t.value);
+  const price = (m.variants?.[0]?.calculated_price?.calculated_amount) || 0;
+  const currency = m.variants?.[0]?.calculated_price?.currency_code || 'usd';
 
   return {
     id: m.id,
@@ -92,6 +108,18 @@ export function mapMedusaProduct(m: MedusaProduct): FrontendProduct {
     createdAt: m.created_at,
     updatedAt: m.updated_at,
     metadata: m.metadata,
+    // Compatibility aliases
+    name: m.title,
+    slug: m.handle,
+    price,
+    originalPrice: price,
+    image: m.thumbnail || m.images?.[0]?.url || '',
+    rating: 0,
+    reviews: 0,
+    colors: [],
+    discount: 0,
+    isNew: tagValues.includes('new'),
+    isBestSeller: tagValues.includes('best-seller'),
   };
 }
 

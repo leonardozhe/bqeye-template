@@ -4,13 +4,13 @@ import { Typography, Button, Box, Avatar , Grid } from '@mui/material';
 import Container from '@mui/material/Container';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ProductCard from '@/components/product/ProductCard';
-import { getNewArrivals, getBestSellers } from '@/lib/products';
+import { useNewArrivals, useBestSellers } from '@/hooks/useProducts';
 
-// Pre-compute data outside component to avoid re-renders
-const newArrivals = getNewArrivals();
-const bestSellers = getBestSellers();
+export default function HomePage() {
+  const { products: newArrivals } = useNewArrivals(4);
+  const { products: bestSellers } = useBestSellers(4);
 
-const categoryShowcase = [
+  const categoryShowcase = [
   { name: 'Blue Contacts', image: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=400&h=300&fit=crop', href: '/products?category=colored-contacts' },
   { name: 'Cosplay Lenses', image: 'https://images.unsplash.com/photo-1592981712106-c44375939d7b?w=400&h=300&fit=crop', href: '/products?category=cosplay' },
   { name: 'Natural Brown', image: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?w=400&h=300&fit=crop', href: '/products?category=colored-contacts' },
@@ -26,9 +26,6 @@ const shopByLook = [
   { name: 'Party', image: 'https://images.unsplash.com/photo-1574169208507-84376144848b?w=200&h=200&fit=crop&sat=50' },
   { name: 'Daily', image: 'https://images.unsplash.com/photo-1592981712106-c44375939d7b?w=200&h=200&fit=crop&sat=-40' },
 ];
-
-export default function HomePage() {
-  // Data pre-computed at module level
 
   return (
     <Box>

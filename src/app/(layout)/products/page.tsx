@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useMemo, Suspense } from 'react';
+import { useState, useMemo, Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Container, Box, Typography, Grid, IconButton, Button,
-  Divider, Collapse, TextField, InputAdornment
+  Divider, Collapse, TextField, InputAdornment, CircularProgress
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,7 +13,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ProductCard from '@/components/product/ProductCard';
-import { getProducts, Product } from '@/lib/products';
+import { useProducts } from '@/hooks/useProducts';
+import type { FrontendProduct } from '@/api/medusa-mappers';
 
 const SORT_OPTIONS = [
   { value: 'popular', label: 'Relevance' },
@@ -55,37 +56,32 @@ function ProductsPageInner() {
   const priceRange = searchParams.get('price') || 'all';
   const shapeFilter = searchParams.get('shape') || 'all';
 
+  const { products: rawProducts, loading, error } = useProducts({
+    limit: 50,
+    categoryId: selectedCategory !== 'all' ? selectedCategory : undefined,
+  });
+
   const products = useMemo(() => {
-    let filtered = getProducts();
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter((p) => p.category === selectedCategory);
-    }
+    let filtered = rawProducts;
     if (priceRange !== 'all') {
       const [min, max] = priceRange.split('-').map(Number);
-      filtered = filtered.filter((p) => p.price >= min && (!max || p.price <= max));
-    }
-    if (shapeFilter !== 'all') {
       filtered = filtered.filter((p) => {
-        // Simple shape matching based on product name/description
-        const name = (p.name + ' ' + p.description).toLowerCase();
-        return name.includes(shapeFilter.toLowerCase());
+        const price = p.variants[0]?.price || 0;
+        return price >= min && (!max || price <= max);
       });
     }
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter((p) =>
-        p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
+        p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
       );
     }
     switch (sortBy) {
-      case 'price-asc': return [...filtered].sort((a, b) => a.price - b.price);
-      case 'price-desc': return [...filtered].sort((a, b) => b.price - a.price);
-      case 'rating': return [...filtered].sort((a, b) => b.rating - a.rating);
-      case 'discount': return [...filtered].sort((a, b) => (b.discount || 0) - (a.discount || 0));
-      case 'newest': return [...filtered].sort((a, b) => b.id - a.id);
-      default: return [...filtered].sort((a, b) => b.reviews - a.reviews);
+      case 'price-asc': return [...filtered].sort((a, b) => (a.variants[0]?.price || 0) - (b.variants[0]?.price || 0));
+      case 'price-desc': return [...filtered].sort((a, b) => (b.variants[0]?.price || 0) - (a.variants[0]?.price || 0));
+      default: return [...filtered];
     }
-  }, [selectedCategory, priceRange, shapeFilter, sortBy, searchQuery]);
+  }, [rawProducts, priceRange, sortBy, searchQuery]);
 
   const meta = CATEGORY_META[selectedCategory] || CATEGORY_META.all;
 
@@ -198,7 +194,7 @@ function ProductsPageInner() {
   );
 
   // ─── Product Card Component (use shared component)
-  const ProductCardComponent = ({ product }: { product: Product }) => {
+  const ProductCardComponent = ({ product }: { product: any }) => {
     return <ProductCard product={product} />;
   };
 

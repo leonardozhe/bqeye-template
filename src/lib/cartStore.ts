@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Product } from './products';
+import type { FrontendProduct } from '@/api/medusa-mappers';
 import { LensConfiguration } from './lensConfig';
 
-export interface CartItem extends Product {
+export interface CartItem extends FrontendProduct {
   quantity: number;
   lensConfig?: LensConfiguration;
-  cartItemId?: string; // unique ID for items with lens config
+  cartItemId?: string;
 }
 
 export interface ShippingAddress {
@@ -35,7 +35,7 @@ interface CartStore {
   couponDiscount: number;
   shippingMethod: 'standard' | 'express';
   shippingAddress: ShippingAddress | null;
-  addItem: (product: Product, quantity?: number) => void;
+  addItem: (product: FrontendProduct, quantity?: number) => void;
   removeItem: (id: number | string) => void;
   updateQuantity: (id: number | string, quantity: number) => void;
   clearCart: () => void;
@@ -66,7 +66,7 @@ export const useCartStore = create<CartStore>()(
       shippingMethod: 'standard',
       shippingAddress: null,
 
-      addItem: (product: Product & { lensConfig?: LensConfiguration }, quantity = 1) =>
+      addItem: (product: FrontendProduct & { lensConfig?: LensConfiguration }, quantity = 1) =>
         set((state) => {
           // Items with lens config are always unique entries
           if (product.lensConfig) {

@@ -9,7 +9,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import BuildIcon from '@mui/icons-material/Build';
 import { useCartStore } from '@/lib/cartStore';
-import { Product } from '@/lib/products';
+import type { FrontendProduct as Product } from '@/api/medusa-mappers';
 
 export default function AddToCartSection({ product }: { product: Product }) {
   const router = useRouter();

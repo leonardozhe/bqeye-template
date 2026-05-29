@@ -18,7 +18,7 @@ import {
   needsPrescription,
 } from '@/lib/lensConfig';
 import { useCartStore } from '@/lib/cartStore';
-import { Product } from '@/lib/products';
+import type { FrontendProduct as Product } from '@/api/medusa-mappers';
 
 const STEPS = [
   { label: '镜片类型', short: '类型' },

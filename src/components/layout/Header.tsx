@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -19,7 +19,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import { useCartStore } from '@/lib/cartStore';
-import { getProducts } from '@/lib/products';
+import { medusaProducts } from '@/api/medusa';
 
 // Zeelool nav tabs — exact names
 const mainTabs = [
@@ -175,14 +175,17 @@ export default function Header() {
     megaTimer.current = setTimeout(() => setActiveMegaTab(null), 200);
   };
 
-  const searchResults = searchQuery.length >= 2
-    ? getProducts().filter((p) =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 8)
-    : [];
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
-  const popularProducts = getProducts().filter((p) => p.isBestSeller).slice(0, 5);
+  useEffect(() => {
+    if (searchQuery.length < 2) { setSearchResults([]); return; }
+    const t = setTimeout(() => {
+      medusaProducts.list({ q: searchQuery, limit: 8 })
+        .then(r => setSearchResults(r.products))
+        .catch(() => setSearchResults([]));
+    }, 300);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
 
   const drawer = (
     <Box sx={{ width: 300 }} role="presentation">
@@ -398,9 +401,9 @@ export default function Header() {
             <List>
               {searchResults.map((product) => (
                 <ListItem key={product.id} disablePadding>
-                  <ListItemButton href={`/products/${product.slug}`} onClick={() => setSearchOpen(false)} sx={{ py: 1.5, px: 2 }}>
-                    <Box component="img" src={product.image} alt={product.name} sx={{ width: 56, height: 56, borderRadius: '8px', objectFit: 'cover', mr: 2 }} />
-                    <ListItemText primary={product.name} secondary={`$${product.price.toFixed(2)}`} primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }} secondaryTypographyProps={{ variant: 'body2', color: '#463AE8', fontWeight: 600 }} />
+                  <ListItemButton href={`/products/${product.handle}`} onClick={() => setSearchOpen(false)} sx={{ py: 1.5, px: 2 }}>
+                    <Box component="img" src={product.thumbnail} alt={product.title} sx={{ width: 56, height: 56, borderRadius: '8px', objectFit: 'cover', mr: 2 }} />
+                    <ListItemText primary={product.title} secondary={`$${(product.variants?.[0]?.price ?? 0).toFixed(2)}`} primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }} secondaryTypographyProps={{ variant: 'body2', color: '#463AE8', fontWeight: 600 }} />
                   </ListItemButton>
                 </ListItem>
               ))}
@@ -413,14 +416,7 @@ export default function Header() {
             <Box sx={{ p: 2 }}>
               <Typography variant="body2" sx={{ fontWeight: 700, mb: 1.5, color: '#282828', px: 1 }}>Popular Products</Typography>
               <List>
-                {popularProducts.map((product) => (
-                  <ListItem key={product.id} disablePadding>
-                    <ListItemButton href={`/products/${product.slug}`} onClick={() => setSearchOpen(false)} sx={{ py: 1.5, px: 2 }}>
-                      <Box component="img" src={product.image} alt={product.name} sx={{ width: 56, height: 56, borderRadius: '8px', objectFit: 'cover', mr: 2 }} />
-                      <ListItemText primary={product.name} secondary={`$${product.price.toFixed(2)}`} primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }} secondaryTypographyProps={{ variant: 'body2', color: '#463AE8', fontWeight: 600 }} />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
+                  {/* Popular products temporarily disabled — will be fetched from Medusa */}
               </List>
             </Box>
           )}

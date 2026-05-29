@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   useMediaQuery,
   useTheme,
@@ -15,12 +15,14 @@ import {
   ListItemButton,
   ListItemText,
   Divider,
-  InputAdornment } from '@mui/material';
+  InputAdornment,
+  CircularProgress } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import HistoryIcon from '@mui/icons-material/History';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { getProducts } from '@/lib/products';
+import { medusaProducts } from '@/api/medusa';
+import type { FrontendProduct } from '@/api/medusa-mappers';
 
 interface SearchModalProps {
   open: boolean;
@@ -31,15 +33,41 @@ const recentSearches = ['blue contacts', 'cosplay lenses', 'cat eye'];
 
 export default function SearchModal({ open, onClose }: SearchModalProps) {
   const [query, setQuery] = useState('');
+  const [results, setResults] = useState<FrontendProduct[]>([]);
+  const [popular, setPopular] = useState<FrontendProduct[]>([]);
+  const [searching, setSearching] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const results = query.length >= 2
-    ? getProducts().filter((p) =>
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
-        p.description.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 6)
-    : [];
+  // Fetch popular products when modal opens
+  useEffect(() => {
+    if (open && popular.length === 0) {
+      medusaProducts.list({ tag: 'best-seller', limit: 3 })
+        .then(r => setPopular(r.products))
+        .catch(() => {});
+    }
+  }, [open, popular.length]);
+
+  // Debounced search against Medusa
+  useEffect(() => {
+    if (query.length < 2) {
+      setResults([]);
+      return;
+    }
+    setSearching(true);
+    const timer = setTimeout(() => {
+      medusaProducts.list({ q: query, limit: 6 })
+        .then(r => setResults(r.products))
+        .catch(() => setResults([]))
+        .finally(() => setSearching(false));
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Reset query when modal closes
+  useEffect(() => {
+    if (!open) setQuery('');
+  }, [open]);
 
   return (
     <Dialog
@@ -86,19 +114,23 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
 
         {/* Results or suggestions */}
         <Box sx={{ maxHeight: '60vh', overflow: 'auto' }}>
-          {results.length > 0 ? (
+          {searching ? (
+            <Box sx={{ p: 4, textAlign: 'center' }}>
+              <CircularProgress size={24} />
+            </Box>
+          ) : results.length > 0 ? (
             <List>
               {results.map((product) => (
                 <ListItem key={product.id} disablePadding>
                   <ListItemButton
-                    href={`/products/${product.slug}`}
+                    href={`/products/${product.handle}`}
                     onClick={onClose}
                     sx={{ py: 1 }}
                   >
                     <Box
                       component="img"
-                      src={product.image}
-                      alt={product.name}
+                      src={product.thumbnail}
+                      alt={product.title}
                       sx={{
                         width: 48,
                         height: 48,
@@ -107,8 +139,8 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
                         mr: 2 }}
                     />
                     <ListItemText
-                      primary={product.name}
-                      secondary={`$${product.price.toFixed(2)}`}
+                      primary={product.title}
+                      secondary={`$${product.variants[0]?.price.toFixed(2)}`}
                       primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
                       secondaryTypographyProps={{ variant: 'body2', color: '#463AE8' }}
                     />
@@ -118,7 +150,7 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
             </List>
           ) : query.length >= 2 ? (
             <Box sx={{ p: 3, textAlign: 'center', color: '#808080' }}>
-              <Typography>No products found for "{query}"</Typography>
+              <Typography>No products found for &quot;{query}&quot;</Typography>
             </Box>
           ) : (
             <>
@@ -161,36 +193,33 @@ export default function SearchModal({ open, onClose }: SearchModalProps) {
                   <TrendingUpIcon fontSize="small" /> Popular Products
                 </Typography>
                 <List>
-                  {getProducts()
-                    .filter((p) => p.isBestSeller)
-                    .slice(0, 3)
-                    .map((product) => (
-                      <ListItem key={product.id} disablePadding>
-                        <ListItemButton
-                          href={`/products/${product.slug}`}
-                          onClick={onClose}
-                          sx={{ py: 1 }}
-                        >
-                          <Box
-                            component="img"
-                            src={product.image}
-                            alt={product.name}
-                            sx={{
-                              width: 48,
-                              height: 48,
-                              borderRadius: '8px',
-                              objectFit: 'cover',
-                              mr: 2 }}
-                          />
-                          <ListItemText
-                            primary={product.name}
-                            secondary={`$${product.price.toFixed(2)}`}
-                            primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
-                            secondaryTypographyProps={{ variant: 'body2', color: '#463AE8' }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                    ))}
+                  {popular.map((product) => (
+                    <ListItem key={product.id} disablePadding>
+                      <ListItemButton
+                        href={`/products/${product.handle}`}
+                        onClick={onClose}
+                        sx={{ py: 1 }}
+                      >
+                        <Box
+                          component="img"
+                          src={product.thumbnail}
+                          alt={product.title}
+                          sx={{
+                            width: 48,
+                            height: 48,
+                            borderRadius: '8px',
+                            objectFit: 'cover',
+                            mr: 2 }}
+                        />
+                        <ListItemText
+                          primary={product.title}
+                          secondary={`$${product.variants[0]?.price.toFixed(2)}`}
+                          primaryTypographyProps={{ variant: 'body2', fontWeight: 500 }}
+                          secondaryTypographyProps={{ variant: 'body2', color: '#463AE8' }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
                 </List>
               </Box>
             </>

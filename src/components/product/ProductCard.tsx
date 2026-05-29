@@ -8,7 +8,7 @@ import StarIcon from '@mui/icons-material/Star';
 
 interface ProductCardProps {
   product: {
-    id: number;
+    id: string;
     name: string;
     slug: string;
     price: number;

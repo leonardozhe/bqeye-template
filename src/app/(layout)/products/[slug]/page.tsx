@@ -1,22 +1,50 @@
+// src/app/(layout)/products/[slug]/page.tsx
+// Server component — calls Medusa API directly
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Typography, Box, Breadcrumbs, Grid, Container } from '@mui/material';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ProductCard from '@/components/product/ProductCard';
-import { getProductBySlug, getRelatedProducts, products } from '@/lib/products';
 import ProductDetail from '@/components/product/ProductDetail';
+import { medusaProducts } from '@/api/medusa';
+import type { FrontendProduct } from '@/api/medusa-mappers';
 
 export function generateStaticParams() {
-  return products.map((product) => ({ slug: product.slug }));
+  // Medusa products are dynamic, return empty for SSR
+  return [];
+}
+
+async function fetchProduct(handle: string): Promise<FrontendProduct | null> {
+  try {
+    return await medusaProducts.getByHandle(handle);
+  } catch {
+    return null;
+  }
+}
+
+async function fetchRelated(categoryId?: string, excludeId?: string, limit = 6): Promise<FrontendProduct[]> {
+  try {
+    const result = await medusaProducts.list({
+      limit,
+      category_id: categoryId,
+    });
+    return result.products.filter(p => p.id !== excludeId);
+  } catch {
+    return [];
+  }
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await fetchProduct(slug);
   if (!product) notFound();
 
-  const relatedProducts = getRelatedProducts(slug, 6);
-  const categoryLabel = product.category === 'cosplay' ? 'Cosplay' : product.category === 'accessories' ? 'Accessories' : 'Colored Contacts';
+  const relatedProducts = await fetchRelated(
+    product.categories[0],
+    product.id,
+    6
+  );
+  const categoryLabel = product.categories[0] || 'All Products';
 
   return (
     <Container maxWidth="xl" sx={{ py: { xs: 2, md: 4 } }}>
@@ -26,15 +54,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <Link href="/products" style={{ textDecoration: 'none', color: '#808080', fontSize: '0.875rem' }}>
           {categoryLabel}
         </Link>
-        <Typography color="#282828" variant="body2">{product.name}</Typography>
+        <Typography color="#282828" variant="body2">{product.title}</Typography>
       </Breadcrumbs>
 
       {/* Product detail with inline lens config */}
       <ProductDetail product={product} />
 
-      {/* ═══════════════════════════════════════════════
-          "You may also like" — Zeelool grid layout
-         ═══════════════════════════════════════════════ */}
+      {/* You may also like */}
       {relatedProducts.length > 0 && (
         <Box sx={{ mt: 8, mb: 6 }}>
           <Typography variant="h5" sx={{ fontWeight: 700, mb: 4, color: '#282828' }}>
