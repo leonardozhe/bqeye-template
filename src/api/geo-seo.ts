@@ -1,30 +1,71 @@
-// src/api/geo-seo.ts — GeoSEO module API following frontend standards
-import apiClient from './client';
+// src/api/geo-seo.ts — GeoSEO module API
+// Uses Medusa backend URL from medusa-config
+import { MEDUSA_URL, medusaHeaders } from '@/lib/medusa-config';
 import type { ApiResponse, GeoSeoConfig, ScoreBreakdown } from './types';
+
+class GeoSeoApiError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+    public code?: string
+  ) {
+    super(message);
+    this.name = 'GeoSeoApiError';
+  }
+}
+
+async function geoSeoFetch<T>(path: string, options?: { method?: string; body?: unknown; admin?: boolean }): Promise<T> {
+  const { method = 'GET', body, admin = false } = options || {};
+
+  const headers: Record<string, string> = {
+    ...medusaHeaders(),
+  };
+
+  if (admin) {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+    if (!token) throw new GeoSeoApiError(401, 'Not authenticated');
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const url = `${MEDUSA_URL}${path.startsWith('/') ? path : `/${path}`}`;
+
+  const response = await fetch(url, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new GeoSeoApiError(response.status, error.message || response.statusText);
+  }
+
+  return response.json() as Promise<T>;
+}
 
 // ===== 管理端 API (需要认证) =====
 
 export const geoSeoAdmin = {
   getConfig: () =>
-    apiClient.get<ApiResponse<GeoSeoConfig>>('/admin/geo-seo/config', { admin: true }),
+    geoSeoFetch<ApiResponse<GeoSeoConfig>>('/admin/geo-seo/config', { admin: true }),
 
   updateConfig: (data: Partial<GeoSeoConfig>) =>
-    apiClient.post<ApiResponse<GeoSeoConfig>>('/admin/geo-seo/config', data, { admin: true }),
+    geoSeoFetch<ApiResponse<GeoSeoConfig>>('/admin/geo-seo/config', { method: 'POST', body: data, admin: true }),
 
   runCheck: (url: string) =>
-    apiClient.post<ApiResponse<unknown>>('/admin/geo-seo/run-check', { url }, { admin: true }),
+    geoSeoFetch<ApiResponse<unknown>>('/admin/geo-seo/run-check', { method: 'POST', body: { url }, admin: true }),
 
   getResults: (params?: { limit?: number; offset?: number }) => {
     const qs = params ? `?limit=${params.limit || 20}&offset=${params.offset || 0}` : '';
-    return apiClient.get<ApiResponse<unknown>>(`/admin/geo-seo/results${qs}`, { admin: true });
+    return geoSeoFetch<ApiResponse<unknown>>(`/admin/geo-seo/results${qs}`, { admin: true });
   },
 
   getMetrics: () =>
-    apiClient.get<ApiResponse<unknown>>('/admin/geo-seo/metrics', { admin: true }),
+    geoSeoFetch<ApiResponse<unknown>>('/admin/geo-seo/metrics', { admin: true }),
 
   getBotVisits: (params?: { limit?: number }) => {
     const qs = params ? `?limit=${params.limit || 50}` : '';
-    return apiClient.get<ApiResponse<unknown>>(`/admin/geo-seo/bot-visits${qs}`, { admin: true });
+    return geoSeoFetch<ApiResponse<unknown>>(`/admin/geo-seo/bot-visits${qs}`, { admin: true });
   },
 };
 
@@ -32,14 +73,14 @@ export const geoSeoAdmin = {
 
 export const geoSeoStore = {
   getStatus: () =>
-    apiClient.get<ApiResponse<ScoreBreakdown>>('/store/geo-seo/status'),
+    geoSeoFetch<ApiResponse<ScoreBreakdown>>('/store/geo-seo/status'),
 
   getSitemapData: () =>
-    apiClient.get<ApiResponse<unknown>>('/store/geo-seo/sitemap-data'),
+    geoSeoFetch<ApiResponse<unknown>>('/store/geo-seo/sitemap-data'),
 
   getJsonLd: (type: string) =>
-    apiClient.get<ApiResponse<unknown>>(`/store/geo-seo/jsonld/${type}`),
+    geoSeoFetch<ApiResponse<unknown>>(`/store/geo-seo/jsonld/${type}`),
 
   getLlmsData: () =>
-    apiClient.get<ApiResponse<unknown>>('/store/geo-seo/llms-data'),
+    geoSeoFetch<ApiResponse<unknown>>('/store/geo-seo/llms-data'),
 };
