@@ -72,17 +72,17 @@ const shopByStyle = [
   },
 ];
 
-// ─── Frame shape icons (9 types, line art style) ───
+// ─── Frame shape icons (zeelool.com 真实图片 + 名字 + href) ───
 const frameShapes = [
-  { name: 'Aviator', path: 'M8 18 Q8 8 24 8 Q40 8 40 18 L40 28 Q40 34 24 34 Q8 34 8 28Z M16 14 L32 14' },
-  { name: 'Cat-Eye', path: 'M4 20 Q10 6 24 16 Q38 6 44 20 Q38 28 24 26 Q10 28 4 20Z' },
-  { name: 'Round', path: 'M8 24 A16 16 0 1 1 40 24 A16 16 0 1 1 8 24' },
-  { name: 'Oval', path: 'M6 24 A18 12 0 1 1 42 24 A18 12 0 1 1 6 24' },
-  { name: 'Browline', path: 'M6 18 Q6 12 24 12 Q42 12 42 18 L42 30 Q42 38 24 38 Q6 38 6 30Z M6 18 Q6 12 24 12 Q42 12 42 18' },
-  { name: 'Geometric', path: 'M24 4 L40 14 L40 34 L24 44 L8 34 L8 14Z' },
-  { name: 'Rectangle', path: 'M4 16 L44 16 L44 32 L4 32Z' },
-  { name: 'Butterfly', path: 'M6 12 Q6 4 24 14 Q42 4 42 12 Q42 22 24 28 Q6 22 6 12Z' },
-  { name: 'Square', path: 'M8 8 L40 8 L40 40 L8 40Z' },
+  { name: 'Aviator', img: 'https://s3.zeelool.com/admin/shop/home/5fe513a15faae7eeb8d9278a5a7ebaa8.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/100' },
+  { name: 'Cat-Eye', img: 'https://s3.zeelool.com/admin/shop/home/4a4c7555638c02bd4a81e5feca586d1b.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/101' },
+  { name: 'Round', img: 'https://s3.zeelool.com/admin/shop/home/98649cc2ad7a37a3ccf1d2cb2bf92027.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/97' },
+  { name: 'Oval', img: 'https://s3.zeelool.com/admin/shop/home/5360d7f68a19a2b4fff7381ab6065357.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/94' },
+  { name: 'Browline', img: 'https://s3.zeelool.com/admin/shop/home/67f4dceb1e54ee798ca0912085e51c4c.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/99' },
+  { name: 'Geometric', img: 'https://s3.zeelool.com/admin/shop/home/5077c58bd030eb3dbdd1652b9e5854e0.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/131' },
+  { name: 'Rectangle', img: 'https://s3.zeelool.com/admin/shop/home/864b08bc55a9cebb55ee480ce94e6f72.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/95' },
+  { name: 'Butterfly', img: 'https://s3.zeelool.com/admin/shop/home/97b86470cf17dcb581a9dae5d9783df1.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/247' },
+  { name: 'Square', img: 'https://s3.zeelool.com/admin/shop/home/aaf22e730e3dec359f70bce9aec2b908.png?im=Resize,width=256,type=downsize&q=75&adaptive=1', href: '/goods-list/96' },
 ];
 
 // ─── Lens type icons (6 types, line art style) ───
@@ -493,28 +493,31 @@ export default function HomePage() {
               <Box
                 key={shape.name}
                 component="a"
-                href={`/products?shape=${shape.name.toLowerCase()}`}
+                href={shape.href}
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   textDecoration: 'none',
-                  gap: 1.5,
+                  gap: { xs: 2.5, md: 3 },
                   transition: 'transform 0.2s',
                   '&:hover': { transform: 'translateY(-4px)' },
                 }}
               >
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                  <path
-                    d={shape.path}
-                    stroke="#1A1A1A"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                  />
-                </svg>
-                <Typography variant="caption" sx={{ fontWeight: 400, color: '#333', fontSize: '0.75rem' }}>
+                <Box
+                  component="img"
+                  src={shape.img}
+                  alt={shape.name}
+                  sx={{
+                    width: { xs: '70px', md: '90px', xl: '110px' },
+                    height: 'auto',
+                    objectFit: 'cover',
+                  }}
+                />
+                <Typography
+                  variant="caption"
+                  sx={{ fontWeight: 400, color: '#282828', fontSize: { xs: '12px', md: '15px', xl: '16px' }, textAlign: 'center' }}
+                >
                   {shape.name}
                 </Typography>
               </Box>
