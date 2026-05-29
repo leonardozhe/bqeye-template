@@ -196,13 +196,13 @@ function ZeeloolProductCard({ product }: { product: FrontendProduct }) {
       </Box>
 
       {/* Product info */}
-      <Typography variant="body2" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 0.5 }}>
+      <Typography variant="body2" sx={{ fontWeight: 700, color: '#282828', mb: 0.5 }}>
         {product.title}
       </Typography>
 
       {/* Price */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-        <Typography variant="body2" sx={{ fontWeight: 600, color: '#1A1A1A' }}>
+        <Typography variant="body2" sx={{ fontWeight: 600, color: '#282828' }}>
           ${price.toFixed(2)}
         </Typography>
         {discount > 0 && (
@@ -235,20 +235,20 @@ function ZeeloolProductCard({ product }: { product: FrontendProduct }) {
 function SectionHeader({ title }: { title: string }) {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-      <Typography variant="h5" sx={{ fontWeight: 700, color: '#1A1A1A' }}>
+      <Typography variant="h5" sx={{ fontWeight: 700, color: '#282828' }}>
         {title}
       </Typography>
       <Button
         endIcon={<ChevronRightIcon />}
         sx={{
-          color: '#1A1A1A',
+          color: '#282828',
           border: '1px solid #1A1A1A',
           borderRadius: '999px',
           px: 2.5, py: 0.8,
           textTransform: 'none',
           fontWeight: 500,
           fontSize: '0.875rem',
-          '&:hover': { bgcolor: '#1A1A1A', color: '#fff' },
+          '&:hover': { bgcolor: '#282828', color: '#fff' },
         }}
       >
         View More
@@ -294,7 +294,7 @@ export default function HomePage() {
         <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1 }}>
           <Grid container alignItems="center" spacing={4}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Typography variant="h1" sx={{ fontWeight: 800, fontSize: { xs: '2.5rem', md: '3.5rem' }, color: '#1A1A1A', mb: 2, lineHeight: 1.1 }}>
+              <Typography variant="h1" sx={{ fontWeight: 800, fontSize: { xs: '2.5rem', md: '3.5rem' }, color: '#282828', mb: 2, lineHeight: 1.1 }}>
                 Summer
                 <br />
                 in Style
@@ -305,7 +305,7 @@ export default function HomePage() {
               <Button
                 variant="contained" size="large" href="/products"
                 sx={{
-                  bgcolor: '#1A1A1A', color: '#fff', borderRadius: '999px',
+                  bgcolor: '#282828', color: '#fff', borderRadius: '999px',
                   px: 4, py: 1.2, textTransform: 'none', fontWeight: 700, fontSize: '1rem',
                   '&:hover': { bgcolor: '#333' },
                 }}
@@ -336,7 +336,7 @@ export default function HomePage() {
               <Grid key={f.title} size={{ xs: 6, md: 3 }}>
                 <Box sx={{ textAlign: 'center' }}>
                   <Box sx={{ mb: 1, display: 'flex', justifyContent: 'center' }}>{f.icon}</Box>
-                  <Typography variant="body1" sx={{ fontWeight: 700, color: '#1A1A1A' }}>{f.title}</Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 700, color: '#282828' }}>{f.title}</Typography>
                   <Typography variant="body2" sx={{ color: '#808080', fontSize: '0.8rem' }}>{f.sub}</Typography>
                 </Box>
               </Grid>
@@ -351,7 +351,7 @@ export default function HomePage() {
       <Container maxWidth="xl" sx={{ py: { xs: 5, md: 8 } }}>
         {/* Section heading */}
         <Box sx={{ textAlign: 'center', mb: 3 }}>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 1 }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: '#282828', mb: 1 }}>
             Frame Your Vibe
           </Typography>
           <Typography variant="body1" sx={{ color: '#555' }}>
@@ -373,10 +373,10 @@ export default function HomePage() {
                 px: 2,
                 border: '1px solid #1A1A1A',
                 bgcolor: '#fff',
-                color: '#1A1A1A',
+                color: '#282828',
                 fontWeight: 500,
                 fontSize: '0.875rem',
-                '&:hover': { bgcolor: '#1A1A1A', color: '#fff' },
+                '&:hover': { bgcolor: '#282828', color: '#fff' },
               }}
             />
           ))}
@@ -384,7 +384,7 @@ export default function HomePage() {
 
         {/* Style Starts Here */}
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { md: 'center' }, gap: 3, mb: 4 }}>
-          <Typography variant="h3" sx={{ fontWeight: 800, color: '#1A1A1A', whiteSpace: 'nowrap' }}>
+          <Typography variant="h3" sx={{ fontWeight: 800, color: '#282828', whiteSpace: 'nowrap' }}>
             Style Starts Here
           </Typography>
           <Typography variant="body1" sx={{ color: '#555', maxWidth: 500 }}>
@@ -407,7 +407,7 @@ export default function HomePage() {
                     borderRadius: '8px', display: 'block',
                   }}
                 />
-                <Typography variant="h6" sx={{ fontWeight: 700, color: '#1A1A1A', mt: 1.5, mb: 0.5 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: '#282828', mt: 1.5, mb: 0.5 }}>
                   {cat.title}
                 </Typography>
                 <Typography variant="body2" sx={{ color: '#555' }}>
@@ -431,7 +431,7 @@ export default function HomePage() {
                   component="img" src={s.image} alt={s.title}
                   sx={{ width: '100%', pt: '100%', objectFit: 'cover', borderRadius: '8px', display: 'block' }}
                 />
-                <Typography variant="h6" sx={{ fontWeight: 700, color: '#1A1A1A', mt: 1.5, mb: 0.5 }}>{s.title}</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 700, color: '#282828', mt: 1.5, mb: 0.5 }}>{s.title}</Typography>
                 <Typography variant="body2" sx={{ color: '#555' }}>{s.desc}</Typography>
               </Box>
             </Grid>
@@ -596,7 +596,7 @@ export default function HomePage() {
               <Button
                 variant="contained" size="large" href="/products?sale=true"
                 sx={{
-                  bgcolor: '#fff', color: '#1A1A1A', borderRadius: '999px',
+                  bgcolor: '#fff', color: '#282828', borderRadius: '999px',
                   px: 4, py: 1.2, textTransform: 'none', fontWeight: 700,
                   '&:hover': { bgcolor: '#f0f0f0' },
                 }}
@@ -739,13 +739,13 @@ export default function HomePage() {
                       mb: 2,
                     }}
                   >
-                    {article.icon === 'frame' && <RemoveRedEyeIcon sx={{ fontSize: 28, color: '#1A1A1A' }} />}
-                    {article.icon === 'lens' && <NewReleasesIcon sx={{ fontSize: 28, color: '#1A1A1A' }} />}
-                    {article.icon === 'rx' && <Typography sx={{ fontWeight: 800, fontSize: '1.5rem', color: '#1A1A1A' }}>Rx</Typography>}
-                    {article.icon === 'maintenance' && <AssignmentReturnIcon sx={{ fontSize: 28, color: '#1A1A1A' }} />}
+                    {article.icon === 'frame' && <RemoveRedEyeIcon sx={{ fontSize: 28, color: '#282828' }} />}
+                    {article.icon === 'lens' && <NewReleasesIcon sx={{ fontSize: 28, color: '#282828' }} />}
+                    {article.icon === 'rx' && <Typography sx={{ fontWeight: 800, fontSize: '1.5rem', color: '#282828' }}>Rx</Typography>}
+                    {article.icon === 'maintenance' && <AssignmentReturnIcon sx={{ fontSize: 28, color: '#282828' }} />}
                   </Box>
 
-                  <Typography variant="body1" sx={{ fontWeight: 700, color: '#1A1A1A', mb: 1 }}>
+                  <Typography variant="body1" sx={{ fontWeight: 700, color: '#282828', mb: 1 }}>
                     {article.title}
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#555', mb: 2, lineHeight: 1.6, minHeight: 40 }}>
@@ -755,14 +755,14 @@ export default function HomePage() {
                     endIcon={<ChevronRightIcon />}
                     href={article.href}
                     sx={{
-                      color: '#1A1A1A',
+                      color: '#282828',
                       border: '1px solid #1A1A1A',
                       borderRadius: '999px',
                       px: 2, py: 0.6,
                       textTransform: 'none',
                       fontWeight: 500,
                       fontSize: '0.8rem',
-                      '&:hover': { bgcolor: '#1A1A1A', color: '#fff' },
+                      '&:hover': { bgcolor: '#282828', color: '#fff' },
                     }}
                   >
                     Learn More

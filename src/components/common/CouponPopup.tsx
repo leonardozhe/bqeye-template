@@ -71,7 +71,7 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
             p: 0, m: 0,
           }}
         >
-          <CloseIcon sx={{ fontSize: 20, color: '#1A1A1A', cursor: 'pointer' }} />
+          <CloseIcon sx={{ fontSize: 20, color: '#282828', cursor: 'pointer' }} />
         </Box>
 
         {/* ─── Top section: coupon grid ─── */}
@@ -332,7 +332,7 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
                           boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
                           textTransform: 'none',
                           fontSize: '12px',
-                          color: '#1A1A1A',
+                          color: '#282828',
                           gap: 0.5,
                           '&:hover': { bgcolor: '#f5f5f5' },
                         }}
