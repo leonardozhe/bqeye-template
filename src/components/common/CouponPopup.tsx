@@ -5,8 +5,7 @@
 import { useState, useEffect } from 'react';
 import {
   Dialog, DialogContent, Box, Typography,
-  Button, TextField, InputAdornment, Checkbox,
-  FormControlLabel } from '@mui/material';
+  Button, TextField, Checkbox, FormControlLabel } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -19,15 +18,14 @@ interface CouponPopupProps {
 
 const COUPONS = [
   { code: 'WELCOME7', label: '$7 OFF', desc: 'Sitewide Sale', badge: 'First Order Only', bg: '#C6FF58' },
-  { code: 'SAVE15', label: '$15 OFF', desc: 'Orders over $169', badge: null },
-  { code: 'SAVE10', label: '$10 OFF', desc: 'Orders over $109', badge: null },
-  { code: 'SAVE5', label: '$5 OFF', desc: 'Orders over $60', badge: null },
+  { code: 'SAVE15', label: '$15 OFF', desc: 'Orders over $169' },
+  { code: 'SAVE10', label: '$10 OFF', desc: 'Orders over $109' },
+  { code: 'SAVE5', label: '$5 OFF', desc: 'Orders over $60' },
 ];
 
 export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps) {
   const [email, setEmail] = useState('');
 
-  // Auto-close if already claimed
   useEffect(() => {
     if (open) {
       const claimed = localStorage.getItem('bqeye_coupon_claimed');
@@ -46,67 +44,67 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="sm"
-      fullWidth
+      maxWidth="xs"
       PaperProps={{
         sx: {
           borderRadius: '12px',
-          overflow: 'hidden',
+          overflow: 'visible',
+          width: '100%',
           maxWidth: 420,
-          mx: 'auto',
         }
       }}
     >
-      <DialogContent sx={{ p: 0 }}>
-        {/* ─── Close button ─── */}
+      <DialogContent sx={{ p: 0, overflow: 'visible' }}>
+        {/* ─── Top section: coupon grid ─── */}
         <Box
-          onClick={onClose}
           sx={{
-            position: 'absolute',
-            top: 40, right: 72,
-            zIndex: 20,
-            cursor: 'pointer',
-            bgcolor: 'transparent',
-            border: 'none',
-            p: 0, m: 0,
+            bgcolor: '#e3e7fa',
+            position: 'relative',
+            pt: '88px',   // space for close button
+            pb: 5,
+            px: 3,        // matches zeelool px-[24px]
           }}
         >
-          <CloseIcon sx={{ fontSize: 20, color: '#282828', cursor: 'pointer' }} />
-        </Box>
+          {/* Close button — matches zeelool: absolute top-10 right-18 */}
+          <Box
+            onClick={onClose}
+            sx={{
+              position: 'absolute',
+              top: '40px',
+              right: '72px',
+              zIndex: 20,
+              cursor: 'pointer',
+              bgcolor: 'transparent',
+              border: 'none',
+              p: 0, m: 0,
+            }}
+          >
+            <CloseIcon sx={{ fontSize: 20, color: '#1A1A1A', cursor: 'pointer' }} />
+          </Box>
 
-        {/* ─── Top section: coupon grid ─── */}
-        <Box sx={{ bgcolor: '#e3e7fa', position: 'relative', borderRadius: '12px 12px 0 0', mx: 1, pt: 5, pb: 5 }}>
           {/* Title */}
           <Typography
             sx={{
               textAlign: 'center',
-              px: 3,
-              pb: 1.5,
               fontSize: '20px',
               lineHeight: '20px',
               fontWeight: 700,
               color: '#333',
-              fontFamily: 'inherit',
+              mb: 2.5,
             }}
           >
             Subscribe to receive the coupons below
           </Typography>
 
-          {/* Coupon grid — 2 columns */}
+          {/* Coupon grid — 2 columns, full width no extra padding */}
           <Box
             sx={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
               gap: 1,
-              overflowY: 'auto',
-              position: 'relative',
-              pt: 1.5,
-              px: 3,
-              pb: 2,
-              height: 178,
             }}
           >
-            {COUPONS.map((c, i) => (
+            {COUPONS.map((c) => (
               <Box
                 key={c.code}
                 sx={{
@@ -117,14 +115,14 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
                   justifyContent: 'center',
                 }}
               >
-                {/* Left coupon edge image */}
+                {/* Left coupon edge */}
                 <Box
                   component="img"
                   src="/icons/coupon/coupon_left.png"
                   alt=""
                   sx={{ position: 'absolute', top: 0, left: 0, width: 10, height: 80 }}
                 />
-                {/* Right coupon edge image (rotated) */}
+                {/* Right coupon edge (rotated) */}
                 <Box
                   component="img"
                   src="/icons/coupon/coupon_left.png"
@@ -164,40 +162,29 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
                     width: 'calc(100% - 20px)',
                     mx: 1.25,
                     borderRadius: 0,
+                    bgcolor: '#fff',
                   }}
                 >
-                  <Box
+                  <Typography
                     sx={{
-                      width: '100%',
-                      height: 80,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bgcolor: '#fff',
+                      color: '#1F2937',
+                      fontSize: '24px',
+                      lineHeight: 1,
+                      fontWeight: 700,
+                      letterSpacing: '-1px',
                     }}
                   >
-                    <Typography
-                      sx={{
-                        color: '#1F2937',
-                        fontSize: '24px',
-                        lineHeight: 1,
-                        fontWeight: 700,
-                        letterSpacing: '-1px',
-                      }}
-                    >
-                      {c.label}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: '#1F2937',
-                        fontSize: '12px',
-                        mt: 0.75,
-                      }}
-                    >
-                      {c.desc}
-                    </Typography>
-                  </Box>
+                    {c.label}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: '#1F2937',
+                      fontSize: '12px',
+                      mt: 0.75,
+                    }}
+                  >
+                    {c.desc}
+                  </Typography>
                 </Box>
               </Box>
             ))}
@@ -209,12 +196,11 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
           sx={{
             position: 'relative',
             mt: -3,
-            borderRadius: '0 0 12px 12px',
             bgcolor: '#edf0ff',
           }}
         >
           <Box sx={{ position: 'relative', zIndex: 12 }}>
-            {/* Decorative background wave */}
+            {/* Decorative gradient wave */}
             <Box
               sx={{
                 position: 'absolute',
@@ -275,32 +261,9 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
                 {/* "or" divider */}
                 <Box sx={{ mx: 'auto', pt: 1.5, width: '100%' }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Box
-                      sx={{
-                        display: 'block',
-                        height: 1,
-                        width: '122px',
-                        background: 'linear-gradient(to right, transparent, #999cff)',
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        color: '#2f4f96',
-                        fontSize: '12px',
-                        lineHeight: '12px',
-                        mx: 1.5,
-                      }}
-                    >
-                      or
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: 'block',
-                        height: 1,
-                        width: '122px',
-                        background: 'linear-gradient(to right, #999cff, transparent)',
-                      }}
-                    />
+                    <Box sx={{ display: 'block', height: 1, width: '122px', background: 'linear-gradient(to right, transparent, #999cff)' }} />
+                    <Typography sx={{ color: '#2f4f96', fontSize: '12px', lineHeight: '12px', mx: 1.5 }}>or</Typography>
+                    <Box sx={{ display: 'block', height: 1, width: '122px', background: 'linear-gradient(to right, #999cff, transparent)' }} />
                   </Box>
 
                   {/* Social login buttons */}
@@ -308,32 +271,17 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
                     {[
                       { name: 'Google', icon: <GoogleIcon sx={{ fontSize: 20 }} /> },
                       { name: 'Facebook', icon: <FacebookIcon sx={{ fontSize: 20, color: '#1877F2' }} /> },
-                      { name: 'Amazon', icon: (
-                        <Box component="img"
-                          src="/icons/amazon_pc.png"
-                          sx={{ width: 20, height: 20 }}
-                        />
-                      )},
+                      { name: 'Amazon', icon: <Box component="img" src="/icons/amazon_pc.png" sx={{ width: 20, height: 20 }} /> },
                     ].map((s) => (
                       <Button
                         key={s.name}
                         fullWidth
                         variant="text"
                         sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          boxSizing: 'border-box',
-                          border: 'none',
-                          width: '100%',
-                          height: 32,
-                          bgcolor: '#fff',
-                          borderRadius: '8px',
-                          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                          textTransform: 'none',
-                          fontSize: '12px',
-                          color: '#282828',
-                          gap: 0.5,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          boxSizing: 'border-box', border: 'none', width: '100%', height: 32,
+                          bgcolor: '#fff', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                          textTransform: 'none', fontSize: '12px', color: '#282828', gap: 0.5,
                           '&:hover': { bgcolor: '#f5f5f5' },
                         }}
                       >
@@ -349,15 +297,7 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
                   <FormControlLabel
                     control={<Checkbox size="small" sx={{ mr: 0 }} />}
                     label={
-                      <Typography
-                        sx={{
-                          ml: 0.75,
-                          fontSize: '11px',
-                          lineHeight: '14px',
-                          color: '#5e68a7',
-                          md: { fontSize: '12px', lineHeight: '18px', ml: 1.25 },
-                        }}
-                      >
+                      <Typography sx={{ ml: 0.75, fontSize: '11px', lineHeight: '14px', color: '#5e68a7' }}>
                         Agree to receive SMS & EMAILS from BQEye by checking{' '}
                         <Box component="span" sx={{ cursor: 'pointer', textDecoration: 'underline' }}>Terms of Use</Box>{' '}
                         and{' '}

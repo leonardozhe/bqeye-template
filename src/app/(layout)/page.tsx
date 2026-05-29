@@ -350,44 +350,86 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <Container maxWidth="xl" sx={{ py: { xs: 5, md: 8 } }}>
         {/* Section heading */}
-        <Box sx={{ textAlign: 'center', mb: 3 }}>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: '#282828', mb: 1 }}>
-            Frame Your Vibe
-          </Typography>
-          <Typography variant="body1" sx={{ color: '#555' }}>
-            Eyewear is the finishing touch of an outfit.
-          </Typography>
+        <Box sx={{ mb: 3 }}>
+          <Box sx={{ textAlign: 'center', px: 1.75 }}>
+            <Typography
+              sx={{
+                fontWeight: 700,
+                color: '#282828',
+                fontSize: { xs: '24px', md: '28px', lg: '32px', xl: '36px', '2xl': '40px' },
+                lineHeight: { xs: '29px', md: '34px', lg: '38px', xl: '43px', '2xl': '48px' },
+              }}
+            >
+              Frame Your Vibe
+            </Typography>
+            <Typography
+              sx={{
+                fontWeight: 400,
+                color: '#282828',
+                fontSize: { xs: '12px', md: '13px', lg: '14px', xl: '15px', '2xl': '16px' },
+                lineHeight: { xs: '14px', md: '15px', lg: '17px', xl: '18px', '2xl': '19px' },
+                mt: { xs: '6px', md: '6px', lg: '7px', xl: '7px', '2xl': '8px' },
+              }}
+            >
+              Eyewear is the finishing touch of an outfit.
+            </Typography>
+          </Box>
         </Box>
 
-        {/* Filter pills */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 1.5, mb: 6 }}>
+        {/* Filter pills — zeelool.com style */}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: { xs: 1, md: 1.5 }, mb: 6 }}>
           {filterPills.map((pill) => (
-            <Chip
+            <Box
               key={pill}
-              label={pill}
               component="a"
               href="/products"
-              clickable
               sx={{
-                borderRadius: '999px',
-                px: 2,
-                border: '1px solid #1A1A1A',
-                bgcolor: '#fff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: { xs: '35px', lg: '40px' },
+                px: { xs: '20px', lg: '27px' },
+                borderRadius: '50px',
+                border: '1px solid',
+                borderColor: '#282828',
+                bgcolor: '#ffffff',
                 color: '#282828',
-                fontWeight: 500,
-                fontSize: '0.875rem',
+                textDecoration: 'none',
+                cursor: 'pointer',
+                fontSize: { xs: '14px', lg: '16px' },
+                fontWeight: 400,
+                fontFamily: 'inherit',
+                transition: 'all 0.2s',
                 '&:hover': { bgcolor: '#282828', color: '#fff' },
               }}
-            />
+            >
+              {pill}
+            </Box>
           ))}
         </Box>
 
         {/* Style Starts Here */}
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { md: 'center' }, gap: 3, mb: 4 }}>
-          <Typography variant="h3" sx={{ fontWeight: 800, color: '#282828', whiteSpace: 'nowrap' }}>
+          <Typography
+            sx={{
+              fontWeight: 800,
+              color: '#282828',
+              fontSize: { xs: '1.75rem', md: '2.25rem', lg: '2.5rem' },
+              lineHeight: 1.2,
+              whiteSpace: 'nowrap',
+            }}
+          >
             Style Starts Here
           </Typography>
-          <Typography variant="body1" sx={{ color: '#555', maxWidth: 500 }}>
+          <Typography
+            sx={{
+              color: '#282828',
+              fontSize: { xs: '14px', lg: '16px' },
+              lineHeight: 1.5,
+              fontWeight: 400,
+              maxWidth: 500,
+            }}
+          >
             From everyday essentials to standout statement pieces, discover frames designed to match your vibe, elevate your style, and complete every look.
           </Typography>
         </Box>
