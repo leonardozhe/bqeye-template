@@ -69,7 +69,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <Grid container spacing={{ xs: 1.5, md: 2 }}>
             {relatedProducts.map((p) => (
               <Grid key={p.id} size={{ xs: 6, sm: 4, md: 3, lg: 2.4 }}>
-                <ProductCard product={p} />
+                {/* TODO: ProductCard */}
               </Grid>
             ))}
           </Grid>

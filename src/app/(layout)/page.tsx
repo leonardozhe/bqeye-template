@@ -19,7 +19,8 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import RxIcon from '@/components/icons/RxIcon';
 import GlassesMaintenanceIcon from '@/components/icons/GlassesMaintenanceIcon';
 import CouponPopup from '@/components/common/CouponPopup';
-import { useNewArrivals, useBestSellers, useProducts } from '@/hooks/useProducts';
+import { demoProducts } from '@/lib/demo-products';
+import ProductCard from '@/components/product/ProductCard';
 import type { FrontendProduct } from '@/api/medusa-mappers';
 
 // ─── Zeelool-style filter pills ───
@@ -123,113 +124,6 @@ const eyewearInsights = [
   },
 ];
 
-// ─── Product Card (Zeelool style) ───
-function ZeeloolProductCard({ product }: { product: FrontendProduct }) {
-  const price = product.variants?.[0]?.price || 0;
-  const originalPrice = price * 1.3;
-  const discount = Math.round((1 - price / originalPrice) * 100);
-
-  return (
-    <Box
-      component="a"
-      href={`/products/${product.handle}`}
-      sx={{
-        display: 'block',
-        textDecoration: 'none',
-        minWidth: 240,
-        flexShrink: 0,
-      }}
-    >
-      {/* Image area */}
-      <Box
-        sx={{
-          position: 'relative',
-          bgcolor: '#F2F2F2',
-          pt: '100%',
-          borderRadius: '8px',
-          overflow: 'hidden',
-          mb: 1.5,
-        }}
-      >
-        <Box
-          component="img"
-          src={product.thumbnail || product.images?.[0] || ''}
-          alt={product.title}
-          sx={{
-            position: 'absolute',
-            top: 0, left: 0,
-            width: '100%', height: '100%',
-            objectFit: 'contain',
-            p: 2,
-          }}
-        />
-        {/* Wishlist heart */}
-        <IconButton
-          size="small"
-          sx={{
-            position: 'absolute',
-            top: 8, right: 8,
-            bgcolor: 'rgba(255,255,255,0.8)',
-            '&:hover': { bgcolor: '#fff' },
-          }}
-          onClick={(e) => e.preventDefault()}
-        >
-          <FavoriteBorderIcon sx={{ fontSize: 18 }} />
-        </IconButton>
-        {/* NEW badge */}
-        {product.isNew && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 8, left: 8,
-              bgcolor: '#000',
-              color: '#fff',
-              px: 1, py: 0.3,
-              borderRadius: '4px',
-              fontSize: '0.65rem',
-              fontWeight: 700,
-            }}
-          >
-            NEW
-          </Box>
-        )}
-      </Box>
-
-      {/* Product info */}
-      <Typography variant="body2" sx={{ fontWeight: 700, color: '#282828', mb: 0.5 }}>
-        {product.title}
-      </Typography>
-
-      {/* Price */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-        <Typography variant="body2" sx={{ fontWeight: 600, color: '#282828' }}>
-          ${price.toFixed(2)}
-        </Typography>
-        {discount > 0 && (
-          <Typography variant="caption" sx={{ color: '#999', textDecoration: 'line-through' }}>
-            ${originalPrice.toFixed(2)}
-          </Typography>
-        )}
-      </Box>
-
-      {/* Color swatches */}
-      <Box sx={{ display: 'flex', gap: 0.5 }}>
-        {['#463AE8', '#8B7355', '#D4A574', '#333'].map((color, i) => (
-          <Box
-            key={i}
-            sx={{
-              width: 14, height: 14,
-              borderRadius: '50%',
-              bgcolor: color,
-              border: i === 0 ? '2px solid #463AE8' : '1px solid #ddd',
-              boxSizing: 'border-box',
-            }}
-          />
-        ))}
-      </Box>
-    </Box>
-  );
-}
 
 // ─── Section Header (with View More button) ───
 function SectionHeader({ title }: { title: string }) {
@@ -259,8 +153,7 @@ function SectionHeader({ title }: { title: string }) {
 
 // ─── MAIN PAGE ───
 export default function HomePage() {
-  const { products: newArrivals, loading: newLoading } = useNewArrivals(8);
-  const { products: bestSellers, loading: bestLoading } = useBestSellers(8);
+
 
   // Coupon popup
   const [couponOpen, setCouponOpen] = useState(false);
@@ -486,24 +379,30 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
         <SectionHeader title="New Arrivals" />
-        {newLoading ? (
-          <Box sx={{ textAlign: 'center', py: 4 }}><Typography color="#808080">Loading...</Typography></Box>
-        ) : (
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 3,
-              overflowX: 'auto',
-              pb: 2,
-              '&::-webkit-scrollbar': { height: 4 },
-              '&::-webkit-scrollbar-thumb': { bgcolor: '#ddd', borderRadius: 2 },
-            }}
-          >
-            {newArrivals.map((p) => (
-              <ZeeloolProductCard key={p.id} product={p} />
-            ))}
-          </Box>
-        )}
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            overflowX: 'auto',
+            pb: 2,
+            px: { xs: '24px', lg: '48px' },
+            '&::-webkit-scrollbar': { height: 4 },
+            '&::-webkit-scrollbar-thumb': { bgcolor: '#ddd', borderRadius: 2 },
+          }}
+        >
+          {demoProducts.slice(0, 6).map((p) => (
+            <ProductCard
+              key={p.id}
+              id={p.id}
+              name={p.name}
+              price={p.price}
+              rating={p.rating}
+              image={p.image}
+              colors={p.colors}
+              href={p.href}
+            />
+          ))}
+        </Box>
       </Container>
 
       {/* ═══════════════════════════════════════════
@@ -588,24 +487,30 @@ export default function HomePage() {
          ═══════════════════════════════════════════ */}
       <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 } }}>
         <SectionHeader title="Best Sellers" />
-        {bestLoading ? (
-          <Box sx={{ textAlign: 'center', py: 4 }}><Typography color="#808080">Loading...</Typography></Box>
-        ) : (
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 3,
-              overflowX: 'auto',
-              pb: 2,
-              '&::-webkit-scrollbar': { height: 4 },
-              '&::-webkit-scrollbar-thumb': { bgcolor: '#ddd', borderRadius: 2 },
-            }}
-          >
-            {bestSellers.map((p) => (
-              <ZeeloolProductCard key={p.id} product={p} />
-            ))}
-          </Box>
-        )}
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            overflowX: 'auto',
+            pb: 2,
+            px: { xs: '24px', lg: '48px' },
+            '&::-webkit-scrollbar': { height: 4 },
+            '&::-webkit-scrollbar-thumb': { bgcolor: '#ddd', borderRadius: 2 },
+          }}
+        >
+          {demoProducts.map((p) => (
+            <ProductCard
+              key={p.id}
+              id={p.id}
+              name={p.name}
+              price={p.price}
+              rating={p.rating}
+              image={p.image}
+              colors={p.colors}
+              href={p.href}
+            />
+          ))}
+        </Box>
       </Container>
 
       {/* ═══════════════════════════════════════════

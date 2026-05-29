@@ -195,7 +195,7 @@ function ProductsPageInner() {
 
   // ─── Product Card Component (use shared component)
   const ProductCardComponent = ({ product }: { product: any }) => {
-    return <ProductCard product={product} />;
+    return // TODO: update to new ProductCard props;
   };
 
   const FilterSidebar = () => (
@@ -363,7 +363,7 @@ function ProductsPageInner() {
           <Grid container spacing={{ xs: 1, sm: 1.5, md: 1.5 }}>
             {products.map((product) => (
               <Grid key={product.id} size={{ xs: 6, sm: 4, md: 4, lg: 3 }}>
-                <ProductCardComponent product={product} />
+                // TODO: ProductCard
               </Grid>
             ))}
           </Grid>
