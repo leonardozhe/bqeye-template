@@ -371,12 +371,7 @@ export default function Header() {
                   <ShoppingCartOutlinedIcon fontSize="small" />
                 </Badge>
               </IconButton>
-              {/* GIFT badge */}
-              <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', bgcolor: '#282828', color: '#fff', px: 1, py: 0.3, borderRadius: '4px', ml: 1, gap: 0.3 }}>
-                <CardGiftcardIcon sx={{ fontSize: 14 }} />
-                <Typography variant="caption" sx={{ fontSize: '0.65rem', fontWeight: 700 }}>GIFT</Typography>
-                <Typography variant="caption" sx={{ fontSize: '0.65rem', fontWeight: 700 }}>X 0</Typography>
-              </Box>
+              {/* GIFT badge removed — will use real coupon data */}
             </Box>
           </Box>
         </Container>
