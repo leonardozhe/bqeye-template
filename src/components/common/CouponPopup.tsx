@@ -1,14 +1,15 @@
 // src/components/common/CouponPopup.tsx
-// 首次访问优惠券弹窗（类似 zeelool.com）
+// 1:1 高仿 zeelool.com coupon 弹窗
 'use client';
 
 import { useState, useEffect } from 'react';
 import {
-  Dialog, DialogContent, DialogTitle, Box, Typography,
-  Button, IconButton, Divider } from '@mui/material';
+  Dialog, DialogContent, Box, Typography,
+  Button, TextField, InputAdornment, Checkbox,
+  FormControlLabel } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
 
 interface CouponPopupProps {
   open: boolean;
@@ -17,25 +18,27 @@ interface CouponPopupProps {
 }
 
 const COUPONS = [
-  { code: 'WELCOME5', label: '$5 OFF', desc: 'Orders over $39', bg: '#463AE8' },
-  { code: 'WELCOME10', label: '$10 OFF', desc: 'Orders over $69', bg: '#E91E63' },
-  { code: 'SAVE20', label: '$20 OFF', desc: 'Orders over $99', bg: '#FF5722' },
+  { code: 'WELCOME7', label: '$7 OFF', desc: 'Sitewide Sale', badge: 'First Order Only', bg: '#C6FF58' },
+  { code: 'SAVE15', label: '$15 OFF', desc: 'Orders over $169', badge: null },
+  { code: 'SAVE10', label: '$10 OFF', desc: 'Orders over $109', badge: null },
+  { code: 'SAVE5', label: '$5 OFF', desc: 'Orders over $60', badge: null },
 ];
 
 export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps) {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
 
-  // 自动选择最优优惠券
+  // Auto-close if already claimed
   useEffect(() => {
     if (open) {
-      setSelected(COUPONS[0].code);
+      const claimed = localStorage.getItem('bqeye_coupon_claimed');
+      if (claimed) onClose();
     }
-  }, [open]);
+  }, [open, onClose]);
 
-  const handleClaim = () => {
-    if (selected) {
-      onApply(selected);
-      onClose();
+  const handleGetCoupons = () => {
+    if (email) {
+      localStorage.setItem('bqeye_coupon_claimed', 'true');
+      onApply(COUPONS[0].code);
     }
   };
 
@@ -43,101 +46,331 @@ export default function CouponPopup({ open, onClose, onApply }: CouponPopupProps
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="xs"
+      maxWidth="sm"
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: '16px',
+          borderRadius: '12px',
           overflow: 'hidden',
-          background: 'linear-gradient(180deg, #463AE8 0%, #2d1fb5 40%, #1a0f6e 100%)',
-          color: '#fff',
+          maxWidth: 420,
+          mx: 'auto',
         }
       }}
     >
       <DialogContent sx={{ p: 0 }}>
-        {/* Close button */}
-        <IconButton
+        {/* ─── Close button ─── */}
+        <Box
           onClick={onClose}
-          sx={{ position: 'absolute', right: 8, top: 8, color: '#ffffff99' }}
-          size="small"
+          sx={{
+            position: 'absolute',
+            top: 40, right: 72,
+            zIndex: 20,
+            cursor: 'pointer',
+            bgcolor: 'transparent',
+            border: 'none',
+            p: 0, m: 0,
+          }}
         >
-          <CloseIcon />
-        </IconButton>
-
-        {/* Header */}
-        <Box sx={{ textAlign: 'center', pt: 4, pb: 2, px: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <CardGiftcardIcon sx={{ fontSize: 48, color: '#C7FF57' }} />
-          </Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
-            Welcome to BQEye!
-          </Typography>
-          <Typography variant="body2" sx={{ color: '#ffffffcc' }}>
-            Claim your exclusive new customer coupons
-          </Typography>
+          <CloseIcon sx={{ fontSize: 20, color: '#1A1A1A', cursor: 'pointer' }} />
         </Box>
 
-        {/* Coupon list */}
-        <Box sx={{ px: 3, pb: 3 }}>
-          {COUPONS.map((c) => (
-            <Box
-              key={c.code}
-              onClick={() => setSelected(c.code)}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                p: 2,
-                mb: 1.5,
-                borderRadius: '8px',
-                bgcolor: selected === c.code ? '#ffffff22' : '#ffffff11',
-                border: selected === c.code ? '2px solid #C7FF57' : '2px solid transparent',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
-            >
-              <LocalOfferIcon sx={{ fontSize: 28, color: c.bg === '#463AE8' ? '#C7FF57' : '#ffffff99' }} />
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 800 }}>{c.label}</Typography>
-                <Typography variant="caption" sx={{ color: '#ffffff99' }}>{c.desc}</Typography>
-              </Box>
-              <Box sx={{
-                px: 1.5, py: 0.5, borderRadius: '4px',
-                bgcolor: c.bg, color: '#fff',
-                fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase'
-              }}>
-                {c.code}
-              </Box>
-            </Box>
-          ))}
-        </Box>
-
-        {/* CTA */}
-        <Box sx={{ px: 3, pb: 4 }}>
-          <Button
-            fullWidth
-            size="large"
-            onClick={handleClaim}
+        {/* ─── Top section: coupon grid ─── */}
+        <Box sx={{ bgcolor: '#e3e7fa', position: 'relative', borderRadius: '12px 12px 0 0', mx: 1, pt: 5, pb: 5 }}>
+          {/* Title */}
+          <Typography
             sx={{
-              bgcolor: '#C7FF57',
-              color: '#282828',
-              borderRadius: '8px',
-              py: 1.5,
-              fontWeight: 800,
-              textTransform: 'none',
-              fontSize: '1rem',
-              '&:hover': { bgcolor: '#b8f04a' },
+              textAlign: 'center',
+              px: 3,
+              pb: 1.5,
+              fontSize: '20px',
+              lineHeight: '20px',
+              fontWeight: 700,
+              color: '#333',
+              fontFamily: 'inherit',
             }}
           >
-            Claim Now
-          </Button>
-          <Typography
-            variant="caption"
-            sx={{ display: 'block', textAlign: 'center', mt: 2, color: '#ffffff66', cursor: 'pointer' }}
-            onClick={onClose}
-          >
-            No thanks, I'll pay full price
+            Subscribe to receive the coupons below
           </Typography>
+
+          {/* Coupon grid — 2 columns */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 1,
+              overflowY: 'auto',
+              position: 'relative',
+              pt: 1.5,
+              px: 3,
+              pb: 2,
+              height: 178,
+            }}
+          >
+            {COUPONS.map((c, i) => (
+              <Box
+                key={c.code}
+                sx={{
+                  position: 'relative',
+                  height: 80,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {/* Left coupon edge image */}
+                <Box
+                  component="img"
+                  src="https://s3.zeelool.com/zeelool-next/coupon/coupon_left.png?im=Resize,width=32,type=downsize&q=75&adaptive=1"
+                  alt=""
+                  sx={{ position: 'absolute', top: 0, left: 0, width: 10, height: 80 }}
+                />
+                {/* Right coupon edge image (rotated) */}
+                <Box
+                  component="img"
+                  src="https://s3.zeelool.com/zeelool-next/coupon/coupon_left.png?im=Resize,width=32,type=downsize&q=75&adaptive=1"
+                  alt=""
+                  sx={{ position: 'absolute', top: 0, right: 0, width: 10, height: 80, transform: 'rotate(180deg)' }}
+                />
+
+                {/* Badge (only first coupon) */}
+                {c.badge && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 0, left: 5,
+                      zIndex: 10,
+                      px: 0.5, py: 0.25,
+                      whiteSpace: 'nowrap',
+                      fontSize: '12px',
+                      lineHeight: '14px',
+                      borderRadius: '6px 0 6px 0',
+                      color: '#282828',
+                      bgcolor: c.bg,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {c.badge}
+                  </Box>
+                )}
+
+                {/* Center coupon content */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 80,
+                    width: 'calc(100% - 20px)',
+                    mx: 1.25,
+                    borderRadius: 0,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: '100%',
+                      height: 80,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bgcolor: '#fff',
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        color: '#1F2937',
+                        fontSize: '24px',
+                        lineHeight: 1,
+                        fontWeight: 700,
+                        letterSpacing: '-1px',
+                      }}
+                    >
+                      {c.label}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: '#1F2937',
+                        fontSize: '12px',
+                        mt: 0.75,
+                      }}
+                    >
+                      {c.desc}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
+        {/* ─── Bottom section: email + login ─── */}
+        <Box
+          sx={{
+            position: 'relative',
+            mt: -3,
+            borderRadius: '0 0 12px 12px',
+            bgcolor: '#edf0ff',
+          }}
+        >
+          <Box sx={{ position: 'relative', zIndex: 12 }}>
+            {/* Decorative background wave */}
+            <Box
+              sx={{
+                position: 'absolute',
+                left: 0, top: -40, right: 0,
+                zIndex: 14,
+                height: '112.5px',
+                background: 'linear-gradient(180deg, transparent 0%, #edf0ff 100%)',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                backgroundSize: '100.3% 112.5px',
+              }}
+            />
+
+            {/* Form area */}
+            <Box sx={{ position: 'relative', zIndex: 15 }}>
+              <Box sx={{ mx: 2.5, pb: 2, pt: 1 }}>
+                {/* Email input */}
+                <Box sx={{ mb: 3 }}>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    placeholder="Email Address"
+                    required
+                    autoComplete="off"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        bgcolor: '#fff',
+                        borderRadius: '8px',
+                        '& fieldset': { borderColor: '#ccc' },
+                        '&:hover fieldset': { borderColor: '#999' },
+                      }
+                    }}
+                  />
+                </Box>
+
+                {/* GET COUPONS button */}
+                <Button
+                  fullWidth
+                  variant="contained"
+                  size="medium"
+                  onClick={handleGetCoupons}
+                  sx={{
+                    bgcolor: '#463AE8',
+                    borderRadius: '8px',
+                    py: 1.2,
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    fontSize: '0.875rem',
+                    letterSpacing: '0.5px',
+                    '&:hover': { bgcolor: '#3a2fd4' },
+                  }}
+                >
+                  GET COUPONS
+                </Button>
+
+                {/* "or" divider */}
+                <Box sx={{ mx: 'auto', pt: 1.5, width: '100%' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box
+                      sx={{
+                        display: 'block',
+                        height: 1,
+                        width: '122px',
+                        background: 'linear-gradient(to right, transparent, #999cff)',
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        color: '#2f4f96',
+                        fontSize: '12px',
+                        lineHeight: '12px',
+                        mx: 1.5,
+                      }}
+                    >
+                      or
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: 'block',
+                        height: 1,
+                        width: '122px',
+                        background: 'linear-gradient(to right, #999cff, transparent)',
+                      }}
+                    />
+                  </Box>
+
+                  {/* Social login buttons */}
+                  <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5, pb: 0.25, mt: 2 }}>
+                    {[
+                      { name: 'Google', icon: <GoogleIcon sx={{ fontSize: 20 }} /> },
+                      { name: 'Facebook', icon: <FacebookIcon sx={{ fontSize: 20, color: '#1877F2' }} /> },
+                      { name: 'Amazon', icon: (
+                        <Box component="img"
+                          src="https://s3.zeelool.com/zeelool-next/login/amazon_pc.png?im=Resize,width=48,type=downsize&q=75&adaptive=1"
+                          sx={{ width: 20, height: 20 }}
+                        />
+                      )},
+                    ].map((s) => (
+                      <Button
+                        key={s.name}
+                        fullWidth
+                        variant="text"
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          boxSizing: 'border-box',
+                          border: 'none',
+                          width: '100%',
+                          height: 32,
+                          bgcolor: '#fff',
+                          borderRadius: '8px',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                          textTransform: 'none',
+                          fontSize: '12px',
+                          color: '#1A1A1A',
+                          gap: 0.5,
+                          '&:hover': { bgcolor: '#f5f5f5' },
+                        }}
+                      >
+                        {s.icon}
+                        {s.name}
+                      </Button>
+                    ))}
+                  </Box>
+                </Box>
+
+                {/* Terms checkbox */}
+                <Box sx={{ mt: 2, display: 'flex' }}>
+                  <FormControlLabel
+                    control={<Checkbox size="small" sx={{ mr: 0 }} />}
+                    label={
+                      <Typography
+                        sx={{
+                          ml: 0.75,
+                          fontSize: '11px',
+                          lineHeight: '14px',
+                          color: '#5e68a7',
+                          md: { fontSize: '12px', lineHeight: '18px', ml: 1.25 },
+                        }}
+                      >
+                        Agree to receive SMS & EMAILS from BQEye by checking{' '}
+                        <Box component="span" sx={{ cursor: 'pointer', textDecoration: 'underline' }}>Terms of Use</Box>{' '}
+                        and{' '}
+                        <Box component="span" sx={{ cursor: 'pointer', textDecoration: 'underline' }}>Privacy Policy</Box>.
+                        To unsubscribe from SMS, please reply STOP.
+                      </Typography>
+                    }
+                    sx={{ m: 0 }}
+                  />
+                </Box>
+              </Box>
+            </Box>
+          </Box>
         </Box>
       </DialogContent>
     </Dialog>
